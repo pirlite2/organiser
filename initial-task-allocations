@@ -1,7 +1,8 @@
-Hong Zhou = 1
-Chung Tung Ching = 2
-Yuqi Jin = 3
-Tong Wang = 4
-Samuel Maher = 5
-Joseph-William Szetu = 6
-Andrei Georgescu = 7
+Hong Zhou = main window |*|
+Chung Tung Ching = XML interface |*|
+Yuqi Jin = set preferences |-|
+Tong Wang = show_schedule() + search_tree() |*|
+Samuel Maher = ItemTree container |-|
+Joseph-William Szetu = NoteEditor/EditBox classes |-|
+Andrei Georgescu =  spell_check() |-|
+

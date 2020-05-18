@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node icon="1" expanded="true">
+    <title>Reminder</title>
+    <note>Don't forget me this weekend!</note>
+    <deadline> 20200520T1300 </deadline>   <!-- use ISO 8601 format here -->
+    <node icon="2" expanded="false">
+        <title>child</title>
+        <note>another reminder!</note>
+        <deadline> 20200521T1430 </deadline>    
+    </node> 
+</node> 
+
+<!-- use XML SAX: https://docs.python.org/3/library/xml.htm -->
+<!-- do we need created and last-edited fields ? -->

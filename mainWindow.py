@@ -55,6 +55,22 @@ class MainWindow(QMainWindow):
         self.treeWidget.setHeaderHidden(True)
         self.splitter.addWidget(self.treeWidget)
         
+        # Add test items
+        self.testItem_0 = QTreeWidgetItem(self.treeWidget)
+        self.testItem_0.setText(0, "zero")
+        
+        self.childItem_0 = QTreeWidgetItem(self.testItem_0)
+        self.childItem_0.setText(0,"child")
+        
+        self.testItem_1 = QTreeWidgetItem(self.treeWidget)
+        self.testItem_1.setText(0, "one")
+        
+        self.testItem_2 = QTreeWidgetItem(self.treeWidget)
+        self.testItem_2.setText(0, "two")
+        
+        self.childItem_1 = QTreeWidgetItem(self.testItem_2)
+        self.childItem_1.setText(0,"child2")
+        
         # Configure text edit class
         self.editBox = QTextEdit()  # sub-class this?
         self.splitter.addWidget(self.editBox)

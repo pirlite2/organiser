@@ -2,11 +2,11 @@
 <node icon="1" expanded="true">
     <title>Reminder</title>
     <note>Don't forget me this weekend!</note>
-    <deadline> 20200520T1300 </deadline>   <!-- use ISO 8601 format here -->
+    <deadline> 202005201300 </deadline>   <!-- use ISO 8601 format here -->
     <node icon="2" expanded="false">
         <title>child</title>
         <note>another reminder!</note>
-        <deadline> 20200521T1430 </deadline>    
+        <deadline> 202005211430 </deadline>    
     </node> 
 </node> 
 

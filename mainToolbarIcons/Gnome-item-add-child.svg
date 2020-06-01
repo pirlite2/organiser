@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-ydpi="90"
+   inkscape:export-xdpi="90"
+   inkscape:export-filename="/home/andreas/project/gnome-icon-theme/scalable/actions/list-add.png"
+   sodipodi:docname="Gnome-item-add-child.svg"
+   version="1.0"
+   inkscape:version="1.0 (1.0+r73+1)"
+   sodipodi:version="0.32"
+   id="svg4289"
+   height="48"
+   width="48">
+  <defs
+     id="defs4291">
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       lpeversion="1"
+       is_visible="true"
+       id="path-effect840"
+       effect="bspline" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-maximized="0"
+     inkscape:document-rotation="0"
+     inkscape:window-y="27"
+     inkscape:window-x="1"
+     inkscape:window-height="968"
+     inkscape:window-width="1808"
+     inkscape:guide-bbox="true"
+     showguides="true"
+     height="48px"
+     width="48px"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     showgrid="false"
+     inkscape:current-layer="layer1"
+     inkscape:cy="24.138236"
+     inkscape:cx="26.287015"
+     inkscape:zoom="16"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <metadata
+     id="metadata4294">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1"
+     id="layer1">
+    <path
+       sodipodi:nodetypes="ccc"
+       id="path842"
+       d="M 9.7725106,6.2942305 9.7317391,33.292671 25.215909,33.162014"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <g
+       transform="matrix(0.6,0,0,0.6,20.781607,18.686616)"
+       id="g836">
+      <path
+         style="opacity:1;fill:#800080;fill-opacity:1;stroke:#555753;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 8.4999995,21.548779 v 4.965487 H 21.542175 v 11.941487 l 4.985666,0.04427 -0.02883,-11.985758 13.000991,-0.04427 V 21.548779 H 26.478909 l 0.0033,-13.005844 -4.984034,-0.042926 -0.0016,13.051461 z"
+         id="path4314"
+         sodipodi:nodetypes="ccccccccccccc" />
+      <path
+         style="opacity:0.4;fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 9.5000012,22.518518 v 3.043463 H 22.540436 v 11.896685 l 2.984633,0.04132 -0.02697,-11.938005 13.001908,-0.04132 V 22.518518 H 25.567682 l 0.0031,-12.978472 -3.071494,-0.040064 -0.0015,13.021048 z"
+         id="path5202"
+         sodipodi:nodetypes="ccccccccccccc" />
+    </g>
+    <circle
+       r="2.6440921"
+       cy="6.3567147"
+       cx="9.8560562"
+       id="path832"
+       style="fill:#800080;fill-rule:evenodd;stroke:none;stroke-width:2.7308" />
+  </g>
+</svg>

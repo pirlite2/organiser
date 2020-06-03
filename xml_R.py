@@ -2,6 +2,7 @@ import xml.sax
 class readHandler(xml.sax.ContentHandler):
     def __init__(self):
         self.CurrentData = ""
+        self.node=""
         self.title = ""
         self.note = ""
         self.deadline = ""
@@ -12,6 +13,12 @@ class readHandler(xml.sax.ContentHandler):
             print ('--- Node ---')
             Icon = attributes["icon"]
             print ("[", Icon, "]")
+            Expanded = attributes["expanded"]
+            if Expanded == 'true':
+                print ('Expanded')
+            else :
+                print ('Compressed')
+
 
     def endElement( self, type):
         if self.CurrentData ==  "title":
@@ -20,6 +27,8 @@ class readHandler(xml.sax.ContentHandler):
             print ( 'Note: ', self.note)
         elif  self.CurrentData ==  "deadline":
             print ('Deadline:',  self.deadline)
+        if  type == "node":
+            print ('--- endNode ---')
         self.CurrentData = ""
 
     def characters(self, content):

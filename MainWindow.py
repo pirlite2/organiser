@@ -1,7 +1,5 @@
 #! /usr/bin/env python3
 
-# Example Qt main program -- pir -- 17.4.2020
-
 #******************************************************************************
 # Insert licence here!
 
@@ -10,20 +8,24 @@
 #******************************************************************************
 
 from sys import exit
-#from PySide2.QtCore import ???
-from PySide2.QtGui import QIcon
 from PySide2.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QSplitter
 from PySide2.QtWidgets import QMenuBar, QMenu, QAction
 from PySide2.QtWidgets import QToolBar
 from PySide2.QtWidgets import QStatusBar
-from PySide2.QtWidgets import QTreeWidget, QTreeWidgetItem, QAbstractItemView
-from PySide2.QtWidgets import QTextEdit
 
-from exampleDialog import ExampleDialog
+from ItemTree import *
 
 #******************************************************************************
 
 class MainWindow(QMainWindow):
+    """
+
+    :version:
+    :author:
+    """
+
+   #--------------------------------------------------------------------------
+
     def __init__(self):
         super().__init__()
 
@@ -35,6 +37,9 @@ class MainWindow(QMainWindow):
         self.openMenuAction = self.fileMenu.addAction("&Open")
         self.openMenuAction.triggered.connect(self.on_open_action)    # New-style connect!
         self.fileMenu.addSeparator()
+        self.setPreferencesMenuAction = self.fileMenu.addAction("Set Preferences")
+        self.setPreferencesMenuAction.triggered.connect(self.on_set_preferences_action)        
+        self.fileMenu.addSeparator()
         self.quitMenuAction = self.fileMenu.addAction("&Quit")
         self.quitMenuAction.triggered.connect(self.on_quit_action)
         
@@ -43,52 +48,19 @@ class MainWindow(QMainWindow):
         self.mainToolBar.setMovable(False)
         
         self.addItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add.svg"), "Add new item")  # Icons from https://commons.wikimedia.org/wiki/GNOME_Desktop_icons
-        self.addItemToolButton.triggered.connect(self.on_item_action)      
+        self.addItemToolButton.triggered.connect(self.on_add_item_action)      
         self.addChildItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add-child.svg"), "Add child item")
-        self.addChildItemToolButton.triggered.connect(self.on_child_item_action)      
+        self.addChildItemToolButton.triggered.connect(self.on_add_child_item_action)      
         self.mainLayout.addWidget(self.mainToolBar)
 
         # Configure window splitter
         self.splitter = QSplitter()
         self.splitter.setHandleWidth(2)
 
-        # Configure tree widget
-        self.treeWidget = QTreeWidget()
-        self.treeWidget.setHeaderHidden(True)
-        self.treeWidget.setColumnCount(2)
-        self.treeWidget.setDragDropMode(QAbstractItemView.InternalMove)
-        
-        #self.treeWidget.setColumnWidth(1,100)
-        self.treeWidget.resizeColumnToContents(1)
-        # how to set column widths to display string of arbitrary length????
-            
-        self.splitter.addWidget(self.treeWidget)      
-                       
-        # Add test items to tree widget
-        self.itemIcon = QIcon("./treeIcons/Gnome-folder-new.svg") 
-        self.testItem_0 = QTreeWidgetItem(self.treeWidget)
-        self.testItem_0.setIcon(0, self.itemIcon)
-        self.testItem_0.setText(0, "zero")     
-        
-        self.childItem_0 = QTreeWidgetItem(self.testItem_0)
-        self.childItem_0.setIcon(0, self.itemIcon)
-        self.childItem_0.setText(0, "child")
-        
-        self.testItem_1 = QTreeWidgetItem(self.treeWidget)
-        self.testItem_1.setIcon(0, self.itemIcon)
-        self.testItem_1.setText(0, "one")
-        
-        self.testItem_2 = QTreeWidgetItem(self.treeWidget)
-        self.testItem_2.setIcon(0, self.itemIcon)
-        self.testItem_2.setText(0, "two")
-        
-        self.childItem_1 = QTreeWidgetItem(self.testItem_2)
-        self.childItem_1.setIcon(0, self.itemIcon)
-        self.childItem_1.setText(0,"child2 is the name of this item")
-                       
-        # Configure text edit class
-        self.editBox = QTextEdit()  # sub-class this & add an editing toolbar?
-        self.splitter.addWidget(self.editBox)
+        # Configure item tree widget
+        self.itemTree = ItemTree()
+        self.splitter.addWidget(self.itemTree)      
+        self.splitter.addWidget(self.itemTree.editBox)
         self.mainLayout.addWidget(self.splitter)
 
         # Is a status bar needed in this application?
@@ -99,38 +71,53 @@ class MainWindow(QMainWindow):
         self.mainWidget = QWidget()
         self.mainWidget.setLayout(self.mainLayout)
         self.setCentralWidget(self.mainWidget)
-
+        
     #--------------------------------------------------------------------------
-    
-    def on_item_action(self):
+ 
+    def on_add_item_action(self):
         """Handler for 'add item' action"""
-        print("add an item")
-        exampleDialog = ExampleDialog("Example dialog")
+        
+        self.itemTree.add_task_item(0, "first", "hello, world!", 202006101200, True, False)      
+        print("adding an item")
+        
         return
         
    #--------------------------------------------------------------------------
    
-    def on_child_item_action(self):
+    def on_add_child_item_action(self):
         """Handler for 'add child item' action"""
+        
         print("add a child item")
-        exampleDialog = ExampleDialog("Example dialog")
+        
         return
         
    #--------------------------------------------------------------------------
     
     def on_open_action(self):
         """Handler for 'open' action"""
+        
         print("open file item")
-        exampleDialog = ExampleDialog("Example dialog")
+        
         return
         
-   #--------------------------------------------------------------------------
+    #--------------------------------------------------------------------------
+   
+    def on_set_preferences_action(self):
+        """Handler for 'set preferences' action"""
+
+        self.itemTree.set_item_tree_preferences()
+        
+        return
+    
+    #--------------------------------------------------------------------------   
     
     def on_quit_action(self):
         """Handler for 'quit' action"""
+        
         print("quitting application")
-        self.close()  
-        return
+        self.close()
+        
+        return     
 
 #******************************************************************************
 
@@ -144,3 +131,18 @@ if __name__ == "__main__":
     exit(application.exec_())   # Not sure why this still has to be `exec_` with a trailing underscore?
 
 #******************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

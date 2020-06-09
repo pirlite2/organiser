@@ -50,7 +50,14 @@ class ItemTree (QTreeWidget):
 
     def add_task_item(self, iconIndex, title, note, deadline, expanded, child):
         """
-        Add a task item to the task tree with the supplied properties
+        Add a task item to the task tree with the supplied properties:
+        
+        iconIndex : index into treeIconsList specifying icon to be used for the node
+        title: QString of text used in tree
+        note : QTextDocument for dispaly/editing in NoteEditor
+        deadline: int in ISO 8601 format of: YYYYMMDDHHMM
+        expanded : True|False dependedning whether the node is to be expanded ot not
+        child : True| False, depending on whether the task to be added is a child or not
 
         @return  :
         @author

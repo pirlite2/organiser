@@ -25,6 +25,8 @@ class SetPreferences (QDialog):
         
         self.setWindowTitle("Set Preferences")
 
+        self.dialogLayout = QVBoxLayout()
+
         # Setup OK and Cancel buttons
         self.okButton = QPushButton("OK", self)
         self.okButton.pressed.connect(self.on_ok)         
@@ -35,7 +37,6 @@ class SetPreferences (QDialog):
         self.buttonLayout.addWidget(self.okButton)
         self.buttonLayout.addWidget(self.cancelButton)
                       
-        self.dialogLayout = QVBoxLayout()
         self.dialogLayout.addStretch()
         self.dialogLayout.addLayout(self.buttonLayout)
 
@@ -63,7 +64,6 @@ class SetPreferences (QDialog):
     
     #--------------------------------------------------------------------------
 
-    
     def on_ok(self):
         """Handler for ''OK'' button"""
                     

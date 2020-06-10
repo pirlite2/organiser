@@ -1,23 +1,25 @@
 #******************************************************************************
 # Insert licence here!
 
-from PySide2.QtGui import QIcon, QFont
-from PySide2.QtWidgets import QTreeWidget, QAbstractItemView
 
 #******************************************************************************
 
-from TaskItem import *
-from NoteEditor import *
-from SetPreferences import *
+import os
+
+from PySide2.QtGui import QIcon, QFont, QTextDocument
+from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog
+
+from TaskItem import TaskItem
+from NoteEditor import NoteEditor
+from SetPreferences import SetPreferences
 
 #******************************************************************************
 
 class ItemTree (QTreeWidget):
     """
-     Container for TaskItem instances
-     
+     Container for TaskItem instances 
     :version:
-    :author:
+    :author: pir
     """
 
     def __init__(self):
@@ -31,43 +33,70 @@ class ItemTree (QTreeWidget):
         #self.setColumnWidth(1,100)
         self.resizeColumnToContents(1)
         # how to set column widths to display string of arbitrary length????
-        
-        # Load tree icons... TODO
+
+        self.itemClicked.connect(self.on_item_clicked)
+        self.itemDoubleClicked.connect(self.on_item_double_clicked)
+       
+        # Load tree icons from ./treeIcons directory
+        self.treeIconsFilesList = os.listdir("./treeIcons")
+        self.treeIconsFilesList.sort()
         self.treeIconsList = []
-        self.treeIconsList.append(QIcon("./treeIcons/Gnome-folder-new.svg"))
-                                                      
+        for i in range(0, len(self.treeIconsFilesList)):
+            self.treeIconsList.append(QIcon("./treeIcons/" + self.treeIconsFilesList[i]))
+                                                    
         # Configure text edit class
         self.editBox = NoteEditor()
     
         # Default parameters
         self.defaultIconIndex = 0
-        self.defaultTreeFont = QFont("Times", 11)
+        self.defaultTreeFont = QFont("Helvetica", 11)
         self.defaultTreeFontSize = 11
         
         return
         
     #--------------------------------------------------------------------------
 
-    def add_task_item(self, iconIndex, title, note, deadline, expanded, child):
+    def insert_task_item(self, iconIndex, title, note, deadline, expanded, child):
         """
         Add a task item to the task tree with the supplied properties:
         
         iconIndex : index into treeIconsList specifying icon to be used for the node
         title: QString of text used in tree
         note : QTextDocument for dispaly/editing in NoteEditor
-        deadline: int in ISO 8601 format of: YYYYMMDDHHMM
-        expanded : True|False dependedning whether the node is to be expanded ot not
-        child : True| False, depending on whether the task to be added is a child or not
+        deadline: int in ISO-8601 format of: YYYYMMDDHHMM
+        expanded : True|False depending whether the node is to be expanded ot not
+        child : True|False, depending on whether the task to be added is a child or not
 
-        @return  :
-        @author
+        @return: None
+        @author: pir
         """     
       
-        # Add TaskItem to treeWidget
-        newTaskItem = TaskItem(self)
+        if (self.topLevelItemCount() == 0):
+            print("empty ItemTree instance")
+            newTaskItem = TaskItem(self)
+            self.setCurrentItem(newTaskItem, 0)
+        else:
+            print("container is not empty!")
+            currentItem = self.currentItem()
+            print(self.currentItem().text(0))   #test
+            if (child == True):
+                # Create child item
+                newTaskItem = TaskItem(currentItem)
+            else:
+                # Create successor item
+                print("creating successor item")    #test
+                parentItem = currentItem.parent()
+                print("type = ", type(parentItem))  #test 
+                if (parentItem is None):
+                    # Insert top level item
+                    newTaskItem = TaskItem(self)    ## not quite right: needs to add a node under the current node, not at the end of the list...
+                else:
+                    newTaskItem = TaskItem(parentItem)
+
+        # Add TaskItem to tree widget
         newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
         newTaskItem.setText(0, title)
-        #newTaskItem.note = # set note text - TODO
+        newTaskItem.note = QTextDocument()
         newTaskItem.deadline = deadline        
         newTaskItem.setExpanded(expanded)
         
@@ -77,12 +106,12 @@ class ItemTree (QTreeWidget):
 
     def delete_task_item(self):
         """
-         Delete the currently-selected task item to the task tree
-
-        @return  :
-        @author
+        Delete the currently-selected task item from the task tree
+        @return: None
+        @author: 
         """
-        
+
+        targetItem = self.currentItem()
         
         return
 
@@ -90,50 +119,52 @@ class ItemTree (QTreeWidget):
 
     def edit_task_item(self):
         """
-         
-
-        @return  :
-        @author
+        Edit the current selected task item
+        @return:
+        @author:
         """
+
         return
 
     #--------------------------------------------------------------------------
     
     def show_schedule(self):
         """
-        
-        @return  :
-        @author
+        Show the schedules for all items with assigned deadlines; ignore tasks without deadlines
+        @return:
+        @author:
         """
+
         return
-        
+    
     #--------------------------------------------------------------------------
         
     def search_tree(self):
-        """   
-
-        @return  :
-        @author
+        """  
+        Search tree for specified text in title
+        @return:
+        @author:
         """
+
         return
     
     #--------------------------------------------------------------------------
 
     def search_notes(self):
         """
-
-        @return  :
-        @author
+        Search notes for specified text
+        @return:
+        @author:
         """
+
         return
 
     #--------------------------------------------------------------------------
    
     def set_item_tree_preferences(self):
         """
-
-        @return  :
-        @author
+        @return: None
+        @author: pir
         """
                              
         preferenceDialog = SetPreferences()       
@@ -150,10 +181,38 @@ class ItemTree (QTreeWidget):
             print("default icon index = ", self.defaultIconIndex)
             # test
         else:
-            print ("rejected")
+            print("rejected")
+            
+        # Update itemTree settings - TODO
                     
         return
         
+    #--------------------------------------------------------------------------
+
+    def on_item_clicked(self, currentItem, column):
+        """
+        Update text editor with note (QTextDocument) of current item
+        @return: None
+        @author: pir
+        """
+        #print(currentItem.text(0), "task clicked") #test
+        self.editBox.setDocument(currentItem.note)
+
+        return
+
+    #--------------------------------------------------------------------------
+
+    def on_item_double_clicked(self, currentItem, column):
+        """
+        Edit properties of current item 
+        @return:
+        @author:
+        """
+
+        print(currentItem.text(0), "task double-clicked")   # test
+
+        return
+    
     #--------------------------------------------------------------------------
 
 

@@ -8,6 +8,7 @@
 #******************************************************************************
 
 from sys import exit
+
 from PySide2.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QSplitter
 from PySide2.QtWidgets import QMenuBar, QMenu, QAction
 from PySide2.QtWidgets import QToolBar
@@ -19,9 +20,9 @@ from ItemTree import *
 
 class MainWindow(QMainWindow):
     """
-
+    Main application window
     :version:
-    :author:
+    :author: pir
     """
 
    #--------------------------------------------------------------------------
@@ -48,9 +49,9 @@ class MainWindow(QMainWindow):
         self.mainToolBar.setMovable(False)
         
         self.addItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add.svg"), "Add new item")  # Icons from https://commons.wikimedia.org/wiki/GNOME_Desktop_icons
-        self.addItemToolButton.triggered.connect(self.on_add_item_action)      
+        self.addItemToolButton.triggered.connect(self.on_insert_item_action)      
         self.addChildItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add-child.svg"), "Add child item")
-        self.addChildItemToolButton.triggered.connect(self.on_add_child_item_action)      
+        self.addChildItemToolButton.triggered.connect(self.on_insert_child_item_action)      
         self.mainLayout.addWidget(self.mainToolBar)
 
         # Configure window splitter
@@ -72,21 +73,24 @@ class MainWindow(QMainWindow):
         self.mainWidget.setLayout(self.mainLayout)
         self.setCentralWidget(self.mainWidget)
         
+        return
+        
     #--------------------------------------------------------------------------
  
-    def on_add_item_action(self):
+    def on_insert_item_action(self):
         """Handler for 'add item' action"""
         
-        self.itemTree.add_task_item(0, "first", "hello, world!", 202006101200, True, False)      
+        self.itemTree.insert_task_item(0, "first", "hello, world!", 202006101200, True, False)      
         print("adding an item")
         
         return
         
    #--------------------------------------------------------------------------
    
-    def on_add_child_item_action(self):
+    def on_insert_child_item_action(self):
         """Handler for 'add child item' action"""
-        
+
+        self.itemTree.insert_task_item(0, "second", "hello, world!", 202006101200, True, True)      
         print("add a child item")
         
         return

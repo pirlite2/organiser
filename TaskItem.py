@@ -27,6 +27,8 @@ class TaskItem (QTreeWidgetItem):
         # Define attributes
         self.note = QTextDocument()
         self.deadline  = 0
+        
+        return
            
     #--------------------------------------------------------------------------
 

@@ -56,13 +56,12 @@ class ItemTree (QTreeWidget):
         
     #--------------------------------------------------------------------------
 
-    def insert_task_item(self, iconIndex, title, note, deadline, expanded, child):
+    def insert_task_item(self, iconIndex, title, deadline, expanded, child):
         """
-        Add a task item to the task tree with the supplied properties:
+        Insert a new task item into the task tree with the supplied properties:
         
         iconIndex : index into treeIconsList specifying icon to be used for the node
-        title: QString of text used in tree
-        note : QTextDocument for dispaly/editing in NoteEditor
+        title: string of text used in tree
         deadline: int in ISO-8601 format of: YYYYMMDDHHMM
         expanded : True|False depending whether the node is to be expanded ot not
         child : True|False, depending on whether the task to be added is a child or not
@@ -89,7 +88,9 @@ class ItemTree (QTreeWidget):
                 print("type = ", type(parentItem))  #test 
                 if (parentItem is None):
                     # Insert top level item
-                    newTaskItem = TaskItem(self)    ## not quite right: needs to add a node under the current node, not at the end of the list...
+                    index = self.indexOfTopLevelItem(currentItem)
+                    newTaskItem = TaskItem()
+                    self.insertTopLevelItem(index + 1, newTaskItem)
                 else:
                     newTaskItem = TaskItem(parentItem)
 

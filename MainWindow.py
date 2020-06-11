@@ -65,13 +65,16 @@ class MainWindow(QMainWindow):
         self.mainLayout.addWidget(self.splitter)
 
         # Is a status bar needed in this application?
-        self.statusBar = QStatusBar()
-        self.mainLayout.addWidget(self.statusBar)
+        #self.statusBar = QStatusBar()
+        #self.mainLayout.addWidget(self.statusBar)
 
         # Set layout as the central widget
         self.mainWidget = QWidget()
         self.mainWidget.setLayout(self.mainLayout)
         self.setCentralWidget(self.mainWidget)
+
+        # TEST ONLY
+        self.uniqueCounter = 0
         
         return
         
@@ -79,8 +82,17 @@ class MainWindow(QMainWindow):
  
     def on_insert_item_action(self):
         """Handler for 'add item' action"""
+
+        # Test code
+        title = str(self.uniqueCounter)
+        self.uniqueCounter += 1
+
+        # TODO Get parameters of new task
+        iconIndex = 0
+        #title = ""
+        deadline = 0
         
-        self.itemTree.insert_task_item(0, "first", "hello, world!", 202006101200, True, False)      
+        self.itemTree.insert_task_item(iconIndex, title, deadline, True, False)      
         print("adding an item")
         
         return
@@ -90,7 +102,16 @@ class MainWindow(QMainWindow):
     def on_insert_child_item_action(self):
         """Handler for 'add child item' action"""
 
-        self.itemTree.insert_task_item(0, "second", "hello, world!", 202006101200, True, True)      
+        # Test code
+        title = str(self.uniqueCounter)
+        self.uniqueCounter += 1
+
+        # TODO Get parameters of new task
+        iconIndex = 0
+        #title = ""
+        deadline = 0
+
+        self.itemTree.insert_task_item(iconIndex, title, deadline, True, True)      
         print("add a child item")
         
         return

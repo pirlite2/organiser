@@ -113,10 +113,32 @@ class ItemTree (QTreeWidget):
         """
 
         targetItem = self.currentItem()
+        # TODO
         
         return
 
     #--------------------------------------------------------------------------
+
+    def add_task_item(self, iconIndex, title, note, deadline, expanded, indentLevel):
+        """
+        
+        indentLevel: 0 = top-level item
+        @return: None
+        @author: 
+        """
+        
+        # Add top level item
+        newTaskItem = TaskItem(self)
+        newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
+        newTaskItem.setText(0, title)
+        newTaskItem.note = QTextDocument()
+        newTaskItem.deadline = deadline        
+        newTaskItem.setExpanded(expanded)
+
+        return
+
+    #--------------------------------------------------------------------------
+
 
     def edit_task_item(self):
         """
@@ -196,7 +218,7 @@ class ItemTree (QTreeWidget):
         @return: None
         @author: pir
         """
-        #print(currentItem.text(0), "task clicked") #test
+        print(currentItem.text(0), "task clicked") #test
         self.editBox.setDocument(currentItem.note)
 
         return

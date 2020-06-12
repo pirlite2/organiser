@@ -153,6 +153,12 @@ if __name__ == "__main__":
     mainWindow = MainWindow()
     mainWindow.show()
 
+    # test
+    #mainWindow.itemTree.add_task_item(0, "hello", "note", 0, True, 0)
+    #mainWindow.itemTree.add_task_item(0, "hello2", "note", 0, True, 0)
+    #mainWindow.itemTree.add_task_item(0, "first child", "note", 0, True, 1)
+
+
     exit(application.exec_())   # Not sure why this still has to be `exec_` with a trailing underscore?
 
 #******************************************************************************

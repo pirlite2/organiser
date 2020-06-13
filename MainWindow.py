@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+
 
 #******************************************************************************
 # Insert licence here!
@@ -11,7 +11,7 @@ from sys import exit
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QSplitter
 from PySide2.QtWidgets import QMenuBar, QMenu, QAction
-from PySide2.QtWidgets import QToolBar
+from PySide2.QtWidgets import QToolBar, QInputDialog
 from PySide2.QtWidgets import QStatusBar
 
 from ItemTree import *
@@ -53,6 +53,8 @@ class MainWindow(QMainWindow):
         self.addChildItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add-child.svg"), "Add child item")
         self.addChildItemToolButton.triggered.connect(self.on_insert_child_item_action)      
         self.mainLayout.addWidget(self.mainToolBar)
+        self.deleteItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add.svg"), "Delete item")  # Icons from https://commons.wikimedia.org/wiki/GNOME_Desktop_icons
+        self.deleteItemToolButton.triggered.connect(self.on_delete_item)
 
         # Configure window splitter
         self.splitter = QSplitter()
@@ -72,9 +74,6 @@ class MainWindow(QMainWindow):
         self.mainWidget = QWidget()
         self.mainWidget.setLayout(self.mainLayout)
         self.setCentralWidget(self.mainWidget)
-
-        # TEST ONLY
-        self.uniqueCounter = 0
         
         return
         
@@ -83,15 +82,10 @@ class MainWindow(QMainWindow):
     def on_insert_item_action(self):
         """Handler for 'add item' action"""
 
-        # Test code
-        title = str(self.uniqueCounter)
-        self.uniqueCounter += 1
+        title = QInputDialog.getText(self, 'Title', 'Enter Title')
+        iconIndex = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
+        deadline = QInputDialog.getText(self, 'Deadline', 'Enter Deadline (YYYY-MM-DD-HH-MM)')
 
-        # TODO Get parameters of new task
-        iconIndex = 0
-        #title = ""
-        deadline = 0
-        
         self.itemTree.insert_task_item(iconIndex, title, deadline, True, False)      
         print("adding an item")
         
@@ -102,20 +96,19 @@ class MainWindow(QMainWindow):
     def on_insert_child_item_action(self):
         """Handler for 'add child item' action"""
 
-        # Test code
-        title = str(self.uniqueCounter)
-        self.uniqueCounter += 1
-
-        # TODO Get parameters of new task
-        iconIndex = 0
-        #title = ""
-        deadline = 0
+        title = QInputDialog.getText(self, 'Title', 'Enter Title')
+        iconIndex = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
+        deadline = QInputDialog.getText(self, 'Deadline', 'Enter Deadline (YYYY-MM-DD-HH-MM)')
 
         self.itemTree.insert_task_item(iconIndex, title, deadline, True, True)      
         print("add a child item")
         
         return
         
+   #--------------------------------------------------------------------------
+
+    def on_delete_item(self):
+
    #--------------------------------------------------------------------------
     
     def on_open_action(self):

@@ -54,6 +54,7 @@ class ItemTree (QTreeWidget):
         
         return
         
+
     #--------------------------------------------------------------------------
 
     def insert_task_item(self, iconIndex, title, deadline, expanded, child):
@@ -95,10 +96,10 @@ class ItemTree (QTreeWidget):
                     newTaskItem = TaskItem(parentItem)
 
         # Add TaskItem to tree widget
-        newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
-        newTaskItem.setText(0, title)
+        newTaskItem.setIcon(0, self.treeIconsList[iconIndex[0]])
+        newTaskItem.setText(0, title[0])
         newTaskItem.note = QTextDocument()
-        newTaskItem.deadline = deadline        
+        newTaskItem.deadline = int(deadline[0])        
         newTaskItem.setExpanded(expanded)
         
         return
@@ -113,6 +114,7 @@ class ItemTree (QTreeWidget):
         """
 
         targetItem = self.currentItem()
+        del targetItem
         
         return
 

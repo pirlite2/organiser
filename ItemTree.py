@@ -7,7 +7,7 @@
 import os
 
 from PySide2.QtGui import QIcon, QFont, QTextDocument
-from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog
+from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog, QInputDialog
 
 from TaskItem import TaskItem
 from NoteEditor import NoteEditor
@@ -114,8 +114,15 @@ class ItemTree (QTreeWidget):
         """
 
         targetItem = self.currentItem()
-        del targetItem
-        
+        targetParent = targetItem.parent()
+        index = self.indexOfTopLevelItem(targetItem)
+
+        if (targetParent is None):
+            self.takeTopLevelItem(index)
+
+        else:
+            targetParent.removeChild(targetItem)
+
         return
 
     #--------------------------------------------------------------------------
@@ -126,6 +133,17 @@ class ItemTree (QTreeWidget):
         @return:
         @author:
         """
+        targetItem = self.currentItem()
+
+        
+        title = QInputDialog.getText(self, 'Title', 'Enter Title')
+        iconIndex = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
+        deadline = QInputDialog.getText(self, 'Deadline', 'Enter Deadline (YYYY-MM-DD-HH-MM)')
+
+        targetItem.setIcon(0, self.treeIconsList[iconIndex[0]])
+        targetItem.setText(0, title[0])
+        targetItem.deadline = int(deadline[0])        
+
 
         return
 

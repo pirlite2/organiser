@@ -55,6 +55,8 @@ class MainWindow(QMainWindow):
         self.mainLayout.addWidget(self.mainToolBar)
         self.deleteItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add.svg"), "Delete item")  # Icons from https://commons.wikimedia.org/wiki/GNOME_Desktop_icons
         self.deleteItemToolButton.triggered.connect(self.on_delete_item)
+        self.editItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add.svg"), "Edit item")  # Icons from https://commons.wikimedia.org/wiki/GNOME_Desktop_icons
+        self.editItemToolButton.triggered.connect(self.on_edit_item)
 
         # Configure window splitter
         self.splitter = QSplitter()
@@ -108,6 +110,17 @@ class MainWindow(QMainWindow):
    #--------------------------------------------------------------------------
 
     def on_delete_item(self):
+
+
+        self.itemTree.delete_task_item()
+
+        return
+
+   #--------------------------------------------------------------------------
+
+    def on_edit_item(self):
+
+        self.itemTree.edit_task_item()
 
    #--------------------------------------------------------------------------
     

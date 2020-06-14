@@ -1,10 +1,20 @@
 #! /usr/bin/env python3
 
 #******************************************************************************
-# Insert licence here!
-
-
-
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA. 
 #******************************************************************************
 
 from sys import exit
@@ -12,7 +22,7 @@ from sys import exit
 from PySide2.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QSplitter
 from PySide2.QtWidgets import QMenuBar, QMenu, QAction
 from PySide2.QtWidgets import QToolBar
-from PySide2.QtWidgets import QStatusBar
+#from PySide2.QtWidgets import QStatusBar   # is this needed?
 
 from ItemTree import *
 
@@ -83,9 +93,10 @@ class MainWindow(QMainWindow):
     def on_insert_item_action(self):
         """Handler for 'add item' action"""
 
-        # Test code
+        # test code
         title = str(self.uniqueCounter)
         self.uniqueCounter += 1
+        # test code
 
         # TODO Get parameters of new task
         iconIndex = 0
@@ -154,9 +165,9 @@ if __name__ == "__main__":
     mainWindow.show()
 
     # test
-    #mainWindow.itemTree.add_task_item(0, "hello", "note", 0, True, 0)
-    #mainWindow.itemTree.add_task_item(0, "hello2", "note", 0, True, 0)
-    #mainWindow.itemTree.add_task_item(0, "first child", "note", 0, True, 1)
+    #mainWindow.itemTree.add_task_item(0, "hello", "note1", 0, True, 0)
+    #mainWindow.itemTree.add_task_item(0, "hello2", "note2", 0, True, 0)
+    #mainWindow.itemTree.add_task_item(0, "first child", "note3", 0, True, 1)
 
 
     exit(application.exec_())   # Not sure why this still has to be `exec_` with a trailing underscore?

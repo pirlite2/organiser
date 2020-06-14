@@ -135,7 +135,6 @@ class ItemTree (QTreeWidget):
         """
         targetItem = self.currentItem()
 
-        
         title = QInputDialog.getText(self, 'Title', 'Enter Title')
         iconIndex = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
         deadline = QInputDialog.getText(self, 'Deadline', 'Enter Deadline (YYYY-MM-DD-HH-MM)')
@@ -143,6 +142,8 @@ class ItemTree (QTreeWidget):
         targetItem.setIcon(0, self.treeIconsList[iconIndex[0]])
         targetItem.setText(0, title[0])
         targetItem.deadline = int(deadline[0])        
+
+
 
 
         return

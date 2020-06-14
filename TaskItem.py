@@ -24,9 +24,11 @@ class TaskItem (QTreeWidgetItem):
     def __init(self):
         super.__init__()
         
+    def attributes(self, deadline, icon):
         # Define attributes
         self.note = QTextDocument()
-        self.deadline  = 0
+        self.deadline  = deadline
+        self.icon = icon
         
         return
            

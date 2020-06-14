@@ -84,9 +84,17 @@ class MainWindow(QMainWindow):
     def on_insert_item_action(self):
         """Handler for 'add item' action"""
 
-        title = QInputDialog.getText(self, 'Title', 'Enter Title')
-        iconIndex = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
-        deadline = QInputDialog.getText(self, 'Deadline', 'Enter Deadline (YYYY-MM-DD-HH-MM)')
+        title, ok = QInputDialog.getText(self, 'Title', 'Enter Title')
+        if (not ok or not title):
+            return
+            
+        iconIndex, ok = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
+        if (not ok):
+            return
+
+        deadline, ok = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
+        if (not ok):
+            return
 
         self.itemTree.insert_task_item(iconIndex, title, deadline, True, False)      
         print("adding an item")
@@ -98,9 +106,17 @@ class MainWindow(QMainWindow):
     def on_insert_child_item_action(self):
         """Handler for 'add child item' action"""
 
-        title = QInputDialog.getText(self, 'Title', 'Enter Title')
-        iconIndex = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
-        deadline = QInputDialog.getText(self, 'Deadline', 'Enter Deadline (YYYY-MM-DD-HH-MM)')
+        title, ok = QInputDialog.getText(self, 'Title', 'Enter Title')
+        if (not ok or not title):
+            return
+            
+        iconIndex, ok = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
+        if (not ok):
+            return
+
+        deadline, ok = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
+        if (not ok):
+            return
 
         self.itemTree.insert_task_item(iconIndex, title, deadline, True, True)      
         print("add a child item")
@@ -110,7 +126,7 @@ class MainWindow(QMainWindow):
    #--------------------------------------------------------------------------
 
     def on_delete_item(self):
-
+        """   """
 
         self.itemTree.delete_task_item()
 
@@ -119,8 +135,11 @@ class MainWindow(QMainWindow):
    #--------------------------------------------------------------------------
 
     def on_edit_item(self):
+        """   """
 
         self.itemTree.edit_task_item()
+
+        return
 
    #--------------------------------------------------------------------------
     

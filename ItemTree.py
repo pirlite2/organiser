@@ -96,10 +96,10 @@ class ItemTree (QTreeWidget):
                     newTaskItem = TaskItem(parentItem)
 
         # Add TaskItem to tree widget
-        newTaskItem.setIcon(0, self.treeIconsList[iconIndex[0]])
-        newTaskItem.setText(0, title[0])
+        newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
+        newTaskItem.setText(0, title)
         newTaskItem.note = QTextDocument()
-        newTaskItem.deadline = int(deadline[0])        
+        newTaskItem.deadline = deadline        
         newTaskItem.setExpanded(expanded)
         
         return
@@ -134,17 +134,14 @@ class ItemTree (QTreeWidget):
         @author:
         """
         targetItem = self.currentItem()
-
+        
         title = QInputDialog.getText(self, 'Title', 'Enter Title')
         iconIndex = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
-        deadline = QInputDialog.getText(self, 'Deadline', 'Enter Deadline (YYYY-MM-DD-HH-MM)')
+        deadline = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
 
         targetItem.setIcon(0, self.treeIconsList[iconIndex[0]])
         targetItem.setText(0, title[0])
-        targetItem.deadline = int(deadline[0])        
-
-
-
+        targetItem.deadline = deadline[0]        
 
         return
 
@@ -230,6 +227,8 @@ class ItemTree (QTreeWidget):
         @return:
         @author:
         """
+
+        self.edit_task_item()
 
         print(currentItem.text(0), "task double-clicked")   # test
 

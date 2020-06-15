@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 #******************************************************************************
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -21,8 +19,8 @@ from sys import exit
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QSplitter
 from PySide2.QtWidgets import QMenuBar, QMenu, QAction
-from PySide2.QtWidgets import QToolBar
-#from PySide2.QtWidgets import QStatusBar   # is this needed?
+from PySide2.QtWidgets import QToolBar, QInputDialog
+#from PySide2.QtWidgets import QStatusBar
 
 from ItemTree import *
 
@@ -62,6 +60,10 @@ class MainWindow(QMainWindow):
         self.addItemToolButton.triggered.connect(self.on_insert_item_action)      
         self.addChildItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add-child.svg"), "Add child item")
         self.addChildItemToolButton.triggered.connect(self.on_insert_child_item_action)      
+        self.deleteItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add.svg"), "Delete item")  
+        self.deleteItemToolButton.triggered.connect(self.on_delete_item)
+        #self.editItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add.svg"), "Edit item")
+        
         self.mainLayout.addWidget(self.mainToolBar)
 
         # Configure window splitter
@@ -82,9 +84,6 @@ class MainWindow(QMainWindow):
         self.mainWidget = QWidget()
         self.mainWidget.setLayout(self.mainLayout)
         self.setCentralWidget(self.mainWidget)
-
-        # TEST ONLY
-        self.uniqueCounter = 0
         
         return
         
@@ -93,16 +92,18 @@ class MainWindow(QMainWindow):
     def on_insert_item_action(self):
         """Handler for 'add item' action"""
 
-        # test code
-        title = str(self.uniqueCounter)
-        self.uniqueCounter += 1
-        # test code
+        title, ok = QInputDialog.getText(self, 'Title', 'Enter Title')
+        if (not ok or not title):
+            return
+            
+        iconIndex, ok = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
+        if (not ok):
+            return
 
-        # TODO Get parameters of new task
-        iconIndex = 0
-        #title = ""
-        deadline = 0
-        
+        deadline, ok = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
+        if (not ok):
+            return
+
         self.itemTree.insert_task_item(iconIndex, title, deadline, True, False)      
         print("adding an item")
         
@@ -113,14 +114,17 @@ class MainWindow(QMainWindow):
     def on_insert_child_item_action(self):
         """Handler for 'add child item' action"""
 
-        # Test code
-        title = str(self.uniqueCounter)
-        self.uniqueCounter += 1
+        title, ok = QInputDialog.getText(self, 'Title', 'Enter Title')
+        if (not ok or not title):
+            return
+            
+        iconIndex, ok = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
+        if (not ok):
+            return
 
-        # TODO Get parameters of new task
-        iconIndex = 0
-        #title = ""
-        deadline = 0
+        deadline, ok = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
+        if (not ok):
+            return
 
         self.itemTree.insert_task_item(iconIndex, title, deadline, True, True)      
         print("add a child item")
@@ -128,18 +132,41 @@ class MainWindow(QMainWindow):
         return
         
    #--------------------------------------------------------------------------
+
+    def on_delete_item(self):
+        """   """
+
+        self.itemTree.delete_task_item()
+
+        return
+
+   #--------------------------------------------------------------------------
+
+    def on_edit_item(self):
+        """Handler for 'Open' menu item"""
+
+        self.itemTree.edit_task_item()
+
+        return
+
+   #--------------------------------------------------------------------------
     
     def on_open_action(self):
         """Handler for 'open' action"""
-        
-        print("open file item")
+
+        print("open file item") # test
+
+        # Get file name
+        self.filename = "???"
+
+        # Read XML file        
         
         return
         
     #--------------------------------------------------------------------------
    
     def on_set_preferences_action(self):
-        """Handler for 'set preferences' action"""
+        """Handler for 'Set preferences' menu action"""
 
         self.itemTree.set_item_tree_preferences()
         

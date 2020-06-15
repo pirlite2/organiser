@@ -18,7 +18,7 @@
 import os
 
 from PySide2.QtGui import QIcon, QFont, QTextDocument
-from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog
+from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog, QInputDialog
 
 from TaskItem import TaskItem
 from NoteEditor import NoteEditor
@@ -120,11 +120,17 @@ class ItemTree (QTreeWidget):
         """
         Delete the currently-selected task item from the task tree
         @return: None
-        @author: 
+        @author: Sam Maher
         """
 
         targetItem = self.currentItem()
-        # TODO
+        targetParent = targetItem.parent()
+        index = self.indexOfTopLevelItem(targetItem)
+
+        if (targetParent is None):
+            self.takeTopLevelItem(index)
+        else:
+            targetParent.removeChild(targetItem)
         
         return
 
@@ -135,7 +141,7 @@ class ItemTree (QTreeWidget):
         
         indentLevel: 0 = top-level item
         @return: None
-        @author: 
+        @author:
         """
         
         # Add top level item
@@ -154,8 +160,17 @@ class ItemTree (QTreeWidget):
         """
         Edit the current selected task item
         @return:
-        @author:
+        @author: Sam Maher
         """
+        targetItem = self.currentItem()
+        
+        title = QInputDialog.getText(self, 'Title', 'Enter Title')
+        iconIndex = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
+        deadline = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
+
+        targetItem.setIcon(0, self.treeIconsList[iconIndex[0]])
+        targetItem.setText(0, title[0])
+        targetItem.deadline = deadline[0]        
 
         return
 
@@ -239,8 +254,10 @@ class ItemTree (QTreeWidget):
         """
         Edit properties of current item 
         @return:
-        @author:
+        @author: pir
         """
+
+        self.edit_task_item()
 
         print(currentItem.text(0), "task double-clicked")   # test
 

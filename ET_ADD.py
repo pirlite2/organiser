@@ -16,6 +16,18 @@ def __init__(self):
     self.deadline = ""
     self.extened = ""
 
+def first_node(self)
+    for i in self.num:
+        attribute= {'icon', self.icon}
+        node[i] = ET.subElement(root[i],'node',attribute)
+        ET.SubElement(node[id],'extened')
+        node[i][0].text= self.extened
+        ET.SubElement(node[i],'title')
+        node[i][1].text= self.title
+        ET.SubElement(node[i],'note')
+        node[i][2].text= self.note 
+        ET.SubElement(node[i],'deadline')
+        node[i][3].text= self.deadline
 def  save_xml(self):    
     for i in self.num:
         attribute= {'icon', self.icon}
@@ -25,7 +37,7 @@ def  save_xml(self):
         ET.SubElement(node[i*4],'title')
         node[i*4][1].text= self.title
         ET.SubElement(node[i*4],'note')
-        node[i*4][2].text= self.note
+        node[i*4][2].text= self.note 
         ET.SubElement(node[i*4],'deadline')
         node[i*4][3].text= self.deadline
 

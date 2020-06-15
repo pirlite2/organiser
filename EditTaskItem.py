@@ -15,9 +15,9 @@
 #  MA 02110-1301, USA.
 #******************************************************************************
 
-from PySide2.QtWidgets import QDialog 
+from PySide2.QtWidgets import QDialog, QLabel
 from PySide2.QtWidgets import QVBoxLayout, QHBoxLayout
-from PySide2.QtWidgets import QPushButton
+from PySide2.QtWidgets import QPushButton, QLineEdit
 
 #******************************************************************************
 
@@ -30,13 +30,36 @@ class EditTaskItem (QDialog):
 
     #--------------------------------------------------------------------------
     
-    def __init__(self):
+    def __init__(self, iconIndex, title, deadline, treeIconsList):
         super().__init__()
         
         self.setWindowTitle("Edit Task Item")
 
-        self.dialogLayout = QVBoxLayout()
+        self.iconIndex = iconIndex
+        self.title = title
+        self.deadline = deadline
+        self.treeIconsList = treeIconsList
 
+        # Setup icon & title layout
+        iconTitleLayout = QHBoxLayout()
+        iconTitleLayout.addStretch()
+        iconLabel = QLabel("Icon")
+        iconTitleLayout.addWidget(iconLabel)
+        self.iconButton = QPushButton()
+        self.iconButton.setIcon(treeIconsList[iconIndex])
+        iconTitleLayout.addWidget(self.iconButton)
+        iconTitleLayout.addStretch()
+        titleLabel = QLabel("Title")
+        iconTitleLayout.addWidget(titleLabel)
+        self.titleEditor = QLineEdit()
+        self.titleEditor.setText(title)
+        iconTitleLayout.addWidget(self.titleEditor)
+
+        # Add schedule setting
+        #TODO
+
+
+      
         # Setup OK and Cancel buttons
         self.okButton = QPushButton("OK", self)
         self.okButton.pressed.connect(self.on_ok)         
@@ -47,29 +70,20 @@ class EditTaskItem (QDialog):
         self.buttonLayout.addWidget(self.okButton)
         self.buttonLayout.addWidget(self.cancelButton)
                       
+        self.dialogLayout = QVBoxLayout()
+        self.dialogLayout.addLayout(iconTitleLayout)
         self.dialogLayout.addStretch()
         self.dialogLayout.addLayout(self.buttonLayout)
 
         self.setLayout(self.dialogLayout)
+        self.titleEditor.setFocus()
                
         return
         
     #--------------------------------------------------------------------------
-      
-    def set_tree_defaults(self, iconIndex, title, deadline, treeIconsList):
-        """ Sets parameters of an item instance """
-        
-        self.iconIndex = iconIndex
-        self.treeIconsList = treeIconsList
-        self.title = title
-        self.deadline = deadline
-		        
-        return 
-               
-    #--------------------------------------------------------------------------  
-     
-    def get_tree_defaults(self):
-        """ Gets existing tree parameters from ItemTree instance """
+   
+    def get_item_values(self):
+        """ Returns existing tree parameters to ItemTree instance """
         
         return (self.iconIndex, self.title, self.deadline)
     
@@ -80,6 +94,10 @@ class EditTaskItem (QDialog):
                     
         print("OK button pushed!")
         
+        # Get/update values from controls
+        self.iconIndex = 0
+        self.deadline = 123
+        self.title = self.titleEditor.text()       
         self.accept()
         
         return

@@ -1,3 +1,5 @@
+#! /usr/bin/python3
+
 #******************************************************************************
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -56,9 +58,9 @@ class MainWindow(QMainWindow):
         self.mainToolBar = QToolBar()
         self.mainToolBar.setMovable(False)
         
-        self.addItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add.svg"), "Add new item")  # Icons from https://commons.wikimedia.org/wiki/GNOME_Desktop_icons
+        self.addItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add.svg"), "Insert new item")  # Icons from https://commons.wikimedia.org/wiki/GNOME_Desktop_icons
         self.addItemToolButton.triggered.connect(self.on_insert_item_action)      
-        self.addChildItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add-child.svg"), "Add child item")
+        self.addChildItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add-child.svg"), "Insert child item")
         self.addChildItemToolButton.triggered.connect(self.on_insert_child_item_action)      
         self.deleteItemToolButton = self.mainToolBar.addAction(QIcon("./mainToolbarIcons/Gnome-item-add.svg"), "Delete item")  
         self.deleteItemToolButton.triggered.connect(self.on_delete_item)
@@ -92,19 +94,20 @@ class MainWindow(QMainWindow):
     def on_insert_item_action(self):
         """Handler for 'add item' action"""
 
-        title, ok = QInputDialog.getText(self, 'Title', 'Enter Title')
-        if (not ok or not title):
-            return
+        # title, ok = QInputDialog.getText(self, 'Title', 'Enter Title')
+        # if (not ok or not title):
+        #     return
             
-        iconIndex, ok = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
-        if (not ok):
-            return
+        # iconIndex, ok = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
+        # if (not ok):
+        #     return
 
-        deadline, ok = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
-        if (not ok):
-            return
+        # deadline, ok = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
+        # if (not ok):
+        #     return
 
-        self.itemTree.insert_task_item(iconIndex, title, deadline, True, False)      
+        self.itemTree.insert_task_item(True, False)
+        #self.itemTree.insert_task_item(iconIndex, title, deadline, True, False)      
         print("adding an item")
         
         return
@@ -114,20 +117,22 @@ class MainWindow(QMainWindow):
     def on_insert_child_item_action(self):
         """Handler for 'add child item' action"""
 
-        title, ok = QInputDialog.getText(self, 'Title', 'Enter Title')
-        if (not ok or not title):
-            return
+        # title, ok = QInputDialog.getText(self, 'Title', 'Enter Title')
+        # if (not ok or not title):
+        #     return
             
-        iconIndex, ok = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
-        if (not ok):
-            return
+        # iconIndex, ok = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
+        # if (not ok):
+        #     return
 
-        deadline, ok = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
-        if (not ok):
-            return
+        # deadline, ok = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
+        # if (not ok):
+        #     return
 
-        self.itemTree.insert_task_item(iconIndex, title, deadline, True, True)      
-        print("add a child item")
+        self.itemTree.insert_task_item(True, True)
+        #self.itemTree.insert_task_item(iconIndex, title, deadline, True, True)      
+    
+        #print("add a child item")
         
         return
         
@@ -194,7 +199,7 @@ if __name__ == "__main__":
     # test
     #mainWindow.itemTree.add_task_item(0, "hello", "note1", 0, True, 0)
     #mainWindow.itemTree.add_task_item(0, "hello2", "note2", 0, True, 0)
-    #mainWindow.itemTree.add_task_item(0, "first child", "note3", 0, True, 1)
+    #mainWindow.itemTree.add_task_item(0, "first child", "note3", 0, True, 0)
 
 
     exit(application.exec_())   # Not sure why this still has to be `exec_` with a trailing underscore?

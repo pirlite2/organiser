@@ -23,6 +23,7 @@ from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog, QInputDia
 from TaskItem import TaskItem
 from NoteEditor import NoteEditor
 from SetPreferences import SetPreferences
+from EditTaskItem import *
 
 #******************************************************************************
 
@@ -67,7 +68,9 @@ class ItemTree (QTreeWidget):
         
     #--------------------------------------------------------------------------
 
-    def insert_task_item(self, iconIndex, title, deadline, expanded, child):
+    def insert_task_item(self, expanded, child):
+    #def insert_task_item(self, iconIndex, title, deadline, expanded, child):
+
         """
         Insert a new task item into the task tree with the supplied properties:
         
@@ -81,12 +84,21 @@ class ItemTree (QTreeWidget):
         @author: pir
         """     
       
+        # Get task parameters
+        title = ""
+        deadline = 0
+        editTaskDialog = EditTaskItem(self.defaultIconIndex, title, deadline, self.treeIconsList)
+        if (editTaskDialog.exec_() == QDialog.Accepted):
+            print("accepted")
+            (iconIndex, title, deadline) = editTaskDialog.get_item_values()
+        else:
+            print("rejected")
+            return
+
         if (self.topLevelItemCount() == 0):
-            print("empty ItemTree instance")
             newTaskItem = TaskItem(self)
             self.setCurrentItem(newTaskItem, 0)
         else:
-            print("container is not empty!")
             currentItem = self.currentItem()
             print(self.currentItem().text(0))   #test
             if (child == True):
@@ -94,7 +106,6 @@ class ItemTree (QTreeWidget):
                 newTaskItem = TaskItem(currentItem)
             else:
                 # Create successor item
-                print("creating successor item")    #test
                 parentItem = currentItem.parent()
                 print("type = ", type(parentItem))  #test 
                 if (parentItem is None):
@@ -163,14 +174,23 @@ class ItemTree (QTreeWidget):
         @author: Sam Maher
         """
         targetItem = self.currentItem()
-        
-        title = QInputDialog.getText(self, 'Title', 'Enter Title')
-        iconIndex = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
-        deadline = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
+        title = targetItem.text(0)
+        deadline = targetItem.deadline
+        editTaskDialog = EditTaskItem(self.defaultIconIndex, title, deadline, self.treeIconsList)
+        if (editTaskDialog.exec_() == QDialog.Accepted):
+            print("edit accepted")
+            (iconIndex, title, deadline) = editTaskDialog.get_item_values()
+        else:
+            print("edit rejected")
+            return
+  
+        #title = QInputDialog.getText(self, 'Title', 'Enter Title')
+        #iconIndex = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
+        #deadline = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
 
-        targetItem.setIcon(0, self.treeIconsList[iconIndex[0]])
-        targetItem.setText(0, title[0])
-        targetItem.deadline = deadline[0]        
+        targetItem.setIcon(0, self.treeIconsList[iconIndex])
+        targetItem.setText(0, title)
+        targetItem.deadline = deadline        
 
         return
 

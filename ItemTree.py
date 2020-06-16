@@ -100,7 +100,7 @@ class ItemTree (QTreeWidget):
             self.setCurrentItem(newTaskItem, 0)
         else:
             currentItem = self.currentItem()
-            print(self.currentItem().text(0))   #test
+            #print(self.currentItem().text(0))   #test
             if (child == True):
                 # Create child item
                 newTaskItem = TaskItem(currentItem)
@@ -122,6 +122,10 @@ class ItemTree (QTreeWidget):
         newTaskItem.note = QTextDocument()
         newTaskItem.deadline = deadline        
         newTaskItem.setExpanded(expanded)
+
+        # Give new item the focus
+        self.setCurrentItem(newTaskItem, 0)
+        self.editBox.setNoteDocument(newTaskItem.note)
         
         return
     
@@ -184,10 +188,6 @@ class ItemTree (QTreeWidget):
             print("edit rejected")
             return
   
-        #title = QInputDialog.getText(self, 'Title', 'Enter Title')
-        #iconIndex = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
-        #deadline = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
-
         targetItem.setIcon(0, self.treeIconsList[iconIndex])
         targetItem.setText(0, title)
         targetItem.deadline = deadline        
@@ -263,6 +263,7 @@ class ItemTree (QTreeWidget):
         @return: None
         @author: pir
         """
+
         self.editBox.setNoteDocument(currentItem.note)
 
         return
@@ -278,7 +279,7 @@ class ItemTree (QTreeWidget):
 
         self.edit_task_item()
 
-        print(currentItem.text(0), "task double-clicked")   # test
+        #print(currentItem.text(0), "task double-clicked")   # test
 
         return
     

@@ -36,7 +36,8 @@ class TaskItem (QTreeWidgetItem):
     def attributes(self, deadline, icon):
         # Define attributes
         self.note = QTextDocument()
-        self.deadline  = deadline
+        self.deadline = deadline
+        #self.iconIndex = iconIndex  # TODO - add this to store actual icon index - required for editing!
         self.icon = icon
         
         return

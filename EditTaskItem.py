@@ -92,7 +92,7 @@ class EditTaskItem (QDialog):
     def on_ok(self):
         """Handler for 'OK' button"""
                     
-        print("OK button pushed!")
+        #print("OK button pushed!")
         
         # Get/update values from controls
         self.iconIndex = 0

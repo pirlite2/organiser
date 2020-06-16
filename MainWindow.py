@@ -94,21 +94,7 @@ class MainWindow(QMainWindow):
     def on_insert_item_action(self):
         """Handler for 'add item' action"""
 
-        # title, ok = QInputDialog.getText(self, 'Title', 'Enter Title')
-        # if (not ok or not title):
-        #     return
-            
-        # iconIndex, ok = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
-        # if (not ok):
-        #     return
-
-        # deadline, ok = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
-        # if (not ok):
-        #     return
-
         self.itemTree.insert_task_item(True, False)
-        #self.itemTree.insert_task_item(iconIndex, title, deadline, True, False)      
-        print("adding an item")
         
         return
         
@@ -117,23 +103,8 @@ class MainWindow(QMainWindow):
     def on_insert_child_item_action(self):
         """Handler for 'add child item' action"""
 
-        # title, ok = QInputDialog.getText(self, 'Title', 'Enter Title')
-        # if (not ok or not title):
-        #     return
-            
-        # iconIndex, ok = QInputDialog.getInt(self, 'Icon Index', 'Choose Icon index')
-        # if (not ok):
-        #     return
-
-        # deadline, ok = QInputDialog.getInt(self, 'Deadline', 'Enter Deadline (YYYYMMDDHHMM)')
-        # if (not ok):
-        #     return
-
         self.itemTree.insert_task_item(True, True)
-        #self.itemTree.insert_task_item(iconIndex, title, deadline, True, True)      
-    
-        #print("add a child item")
-        
+           
         return
         
    #--------------------------------------------------------------------------
@@ -182,7 +153,9 @@ class MainWindow(QMainWindow):
     def on_quit_action(self):
         """Handler for 'quit' action"""
         
-        print("quitting application")
+        # Check whether data needs to be auto-saved on exit
+
+        #print("quitting application")
         self.close()
         
         return     

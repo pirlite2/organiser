@@ -16,33 +16,40 @@
 #******************************************************************************
 
 from PySide2.QtGui import QTextDocument
-from PySide2.QtWidgets import QTextEdit
+from PySide2.QtWidgets import QWidget, QVBoxLayout, QTextEdit, QToolBar
 
 #******************************************************************************
 
-class NoteEditor(QTextEdit):
-    """ 
+class NoteEditor(QWidget):
+    """
     :version:
     :author:
     """
 
     #--------------------------------------------------------------------------
-    
+   
     def __init__(self):
         super().__init__()
-        
+
+        widgetLayout = QVBoxLayout()
+        self.editToolbar = QToolBar()
+        widgetLayout.addWidget(self.editToolbar)
+        self.noteEditBox = QTextEdit()
+        widgetLayout.addWidget(self.noteEditBox)
+        self.setLayout(widgetLayout)
+              
         return
 
     #--------------------------------------------------------------------------
 
-    def setTextDocument(self, document):
+    def setNoteDocument(self, document):
         """
         Set document of the text editor
         :version:
         :author:
         """
 
-        self.setDocument(document)
+        self.noteEditBox.setDocument(document)
 
         return
 

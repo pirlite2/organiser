@@ -18,7 +18,7 @@
 import os
 
 from PySide2.QtGui import QIcon, QFont, QTextDocument
-from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog, QInputDialog
+from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog
 
 from TaskItem import TaskItem
 from NoteEditor import NoteEditor
@@ -263,8 +263,7 @@ class ItemTree (QTreeWidget):
         @return: None
         @author: pir
         """
-        #print(currentItem.text(0), "task clicked") #test
-        self.editBox.setDocument(currentItem.note)
+        self.editBox.setNoteDocument(currentItem.note)
 
         return
 

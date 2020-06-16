@@ -19,6 +19,8 @@ from PySide2.QtWidgets import QDialog, QLabel
 from PySide2.QtWidgets import QVBoxLayout, QHBoxLayout
 from PySide2.QtWidgets import QPushButton, QLineEdit
 
+from IconPickerDialog import IconPickerDialog
+
 #******************************************************************************
 
 class EditTaskItem (QDialog):
@@ -43,13 +45,17 @@ class EditTaskItem (QDialog):
         # Setup icon & title layout
         iconTitleLayout = QHBoxLayout()
         iconTitleLayout.addStretch()
-        iconLabel = QLabel("Icon")
+        iconLabel = QLabel("Icon:")
         iconTitleLayout.addWidget(iconLabel)
+
         self.iconButton = QPushButton()
         self.iconButton.setIcon(treeIconsList[iconIndex])
+        self.iconButton.pressed.connect(self.on_icon_button_pressed)
+
+        
         iconTitleLayout.addWidget(self.iconButton)
         iconTitleLayout.addStretch()
-        titleLabel = QLabel("Title")
+        titleLabel = QLabel("Title:")
         iconTitleLayout.addWidget(titleLabel)
         self.titleEditor = QLineEdit()
         self.titleEditor.setText(title)
@@ -89,13 +95,28 @@ class EditTaskItem (QDialog):
     
     #--------------------------------------------------------------------------
 
+    def on_icon_button_pressed(self):
+        """ Handler for icon button """
+        
+        iconPickerDialog = IconPickerDialog(self.iconIndex, self.treeIconsList)
+        if (iconPickerDialog.exec_() == QDialog.Accepted):
+            # Get selected icon index
+            print("icon picker accepted")
+            self.iconIndex = iconPickerDialog.get_icon_index()
+            self.iconButton.setIcon(self.treeIconsList[self.iconIndex])
+        else:
+            print("icon picker rejected")
+
+        return
+
+    #--------------------------------------------------------------------------
+
     def on_ok(self):
         """Handler for 'OK' button"""
                     
-        #print("OK button pushed!")
+        print("OK button pushed!")
         
         # Get/update values from controls
-        self.iconIndex = 0
         self.deadline = 123
         self.title = self.titleEditor.text()       
         self.accept()

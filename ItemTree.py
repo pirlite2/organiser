@@ -1,7 +1,18 @@
 #******************************************************************************
-# Insert licence here!
-
-
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA. 
 #******************************************************************************
 
 import os
@@ -12,6 +23,7 @@ from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog
 from TaskItem import TaskItem
 from NoteEditor import NoteEditor
 from SetPreferences import SetPreferences
+from EditTaskItem import *
 
 #******************************************************************************
 
@@ -56,7 +68,9 @@ class ItemTree (QTreeWidget):
         
     #--------------------------------------------------------------------------
 
-    def insert_task_item(self, iconIndex, title, deadline, expanded, child):
+    def insert_task_item(self, expanded, child):
+    #def insert_task_item(self, iconIndex, title, deadline, expanded, child):
+
         """
         Insert a new task item into the task tree with the supplied properties:
         
@@ -70,20 +84,28 @@ class ItemTree (QTreeWidget):
         @author: pir
         """     
       
+        # Get task parameters
+        title = ""
+        deadline = 0
+        editTaskDialog = EditTaskItem(self.defaultIconIndex, title, deadline, self.treeIconsList)
+        if (editTaskDialog.exec_() == QDialog.Accepted):
+            print("accepted")
+            (iconIndex, title, deadline) = editTaskDialog.get_item_values()
+        else:
+            print("rejected")
+            return
+
         if (self.topLevelItemCount() == 0):
-            print("empty ItemTree instance")
             newTaskItem = TaskItem(self)
             self.setCurrentItem(newTaskItem, 0)
         else:
-            print("container is not empty!")
             currentItem = self.currentItem()
-            print(self.currentItem().text(0))   #test
+            #print(self.currentItem().text(0))   #test
             if (child == True):
                 # Create child item
                 newTaskItem = TaskItem(currentItem)
             else:
                 # Create successor item
-                print("creating successor item")    #test
                 parentItem = currentItem.parent()
                 print("type = ", type(parentItem))  #test 
                 if (parentItem is None):
@@ -100,6 +122,10 @@ class ItemTree (QTreeWidget):
         newTaskItem.note = QTextDocument()
         newTaskItem.deadline = deadline        
         newTaskItem.setExpanded(expanded)
+
+        # Give new item the focus
+        self.setCurrentItem(newTaskItem, 0)
+        self.editBox.setNoteDocument(newTaskItem.note)
         
         return
     
@@ -109,11 +135,38 @@ class ItemTree (QTreeWidget):
         """
         Delete the currently-selected task item from the task tree
         @return: None
-        @author: 
+        @author: Sam Maher
         """
 
         targetItem = self.currentItem()
+        targetParent = targetItem.parent()
+        index = self.indexOfTopLevelItem(targetItem)
+
+        if (targetParent is None):
+            self.takeTopLevelItem(index)
+        else:
+            targetParent.removeChild(targetItem)
         
+        return
+
+    #--------------------------------------------------------------------------
+
+    def add_task_item(self, iconIndex, title, note, deadline, expanded, indentLevel):
+        """
+        
+        indentLevel: 0 = top-level item
+        @return: None
+        @author:
+        """
+        
+        # Add top level item
+        newTaskItem = TaskItem(self)
+        newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
+        newTaskItem.setText(0, title)
+        newTaskItem.note = QTextDocument()
+        newTaskItem.deadline = deadline        
+        newTaskItem.setExpanded(expanded)
+
         return
 
     #--------------------------------------------------------------------------
@@ -122,8 +175,22 @@ class ItemTree (QTreeWidget):
         """
         Edit the current selected task item
         @return:
-        @author:
+        @author: Sam Maher
         """
+        targetItem = self.currentItem()
+        title = targetItem.text(0)
+        deadline = targetItem.deadline
+        editTaskDialog = EditTaskItem(self.defaultIconIndex, title, deadline, self.treeIconsList)
+        if (editTaskDialog.exec_() == QDialog.Accepted):
+            print("edit accepted")
+            (iconIndex, title, deadline) = editTaskDialog.get_item_values()
+        else:
+            print("edit rejected")
+            return
+  
+        targetItem.setIcon(0, self.treeIconsList[iconIndex])
+        targetItem.setText(0, title)
+        targetItem.deadline = deadline        
 
         return
 
@@ -196,8 +263,8 @@ class ItemTree (QTreeWidget):
         @return: None
         @author: pir
         """
-        #print(currentItem.text(0), "task clicked") #test
-        self.editBox.setDocument(currentItem.note)
+
+        self.editBox.setNoteDocument(currentItem.note)
 
         return
 
@@ -207,13 +274,13 @@ class ItemTree (QTreeWidget):
         """
         Edit properties of current item 
         @return:
-        @author:
+        @author: pir
         """
 
-        print(currentItem.text(0), "task double-clicked")   # test
+        self.edit_task_item()
+
+        #print(currentItem.text(0), "task double-clicked")   # test
 
         return
     
-    #--------------------------------------------------------------------------
-
-
+#******************************************************************************

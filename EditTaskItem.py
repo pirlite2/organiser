@@ -15,28 +15,51 @@
 #  MA 02110-1301, USA.
 #******************************************************************************
 
-from PySide2.QtWidgets import QDialog 
+from PySide2.QtWidgets import QDialog, QLabel
 from PySide2.QtWidgets import QVBoxLayout, QHBoxLayout
-from PySide2.QtWidgets import QPushButton
+from PySide2.QtWidgets import QPushButton, QLineEdit
 
 #******************************************************************************
 
-class SetPreferences (QDialog):
+class EditTaskItem (QDialog):
     """
-    
+    Dialog box to edit task item
     :version:
-    :author:
+    :author: pir
     """
 
     #--------------------------------------------------------------------------
     
-    def __init__(self):
+    def __init__(self, iconIndex, title, deadline, treeIconsList):
         super().__init__()
         
-        self.setWindowTitle("Set Preferences")
+        self.setWindowTitle("Edit Task Item")
 
-        self.dialogLayout = QVBoxLayout()
+        self.iconIndex = iconIndex
+        self.title = title
+        self.deadline = deadline
+        self.treeIconsList = treeIconsList
 
+        # Setup icon & title layout
+        iconTitleLayout = QHBoxLayout()
+        iconTitleLayout.addStretch()
+        iconLabel = QLabel("Icon")
+        iconTitleLayout.addWidget(iconLabel)
+        self.iconButton = QPushButton()
+        self.iconButton.setIcon(treeIconsList[iconIndex])
+        iconTitleLayout.addWidget(self.iconButton)
+        iconTitleLayout.addStretch()
+        titleLabel = QLabel("Title")
+        iconTitleLayout.addWidget(titleLabel)
+        self.titleEditor = QLineEdit()
+        self.titleEditor.setText(title)
+        iconTitleLayout.addWidget(self.titleEditor)
+
+        # Add schedule setting
+        #TODO
+
+
+      
         # Setup OK and Cancel buttons
         self.okButton = QPushButton("OK", self)
         self.okButton.pressed.connect(self.on_ok)         
@@ -47,39 +70,34 @@ class SetPreferences (QDialog):
         self.buttonLayout.addWidget(self.okButton)
         self.buttonLayout.addWidget(self.cancelButton)
                       
+        self.dialogLayout = QVBoxLayout()
+        self.dialogLayout.addLayout(iconTitleLayout)
         self.dialogLayout.addStretch()
         self.dialogLayout.addLayout(self.buttonLayout)
 
         self.setLayout(self.dialogLayout)
+        self.titleEditor.setFocus()
                
         return
         
     #--------------------------------------------------------------------------
-      
-    def set_tree_defaults(self, treeFont, treeFontSize, iconIndex):
-        """ Sets tree parameters in ItemTree instance """
+   
+    def get_item_values(self):
+        """ Returns existing tree parameters to ItemTree instance """
         
-        self.treeFont = treeFont 
-        self.treeFontSize = treeFontSize
-        self.iconIndex = iconIndex
-        
-        return 
-               
-    #--------------------------------------------------------------------------  
-     
-    def get_tree_defaults(self):
-        """ Gets existing tree parameters from ItemTree instance """
-        
-        return (self.treeFont, self.treeFontSize, self.iconIndex)
+        return (self.iconIndex, self.title, self.deadline)
     
     #--------------------------------------------------------------------------
 
     def on_ok(self):
-        """Handler for ''OK'' button"""
+        """Handler for 'OK' button"""
                     
-        print("OK button pushed!")
-        self.treeFontSize = 24	# test to see if changed value can be returned
+        #print("OK button pushed!")
         
+        # Get/update values from controls
+        self.iconIndex = 0
+        self.deadline = 123
+        self.title = self.titleEditor.text()       
         self.accept()
         
         return
@@ -87,7 +105,7 @@ class SetPreferences (QDialog):
     #--------------------------------------------------------------------------
 
     def on_cancel(self):
-        """Handler for 'Cancel''' button"""
+        """Handler for 'Cancel' button"""
                     
         print("Cancel button pushed!")
         

@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<node icon="1" expanded="true">
-    <title>Reminder</title>
-    <note>Don't forget me this weekend!</note>
-    <deadline> 202005201300 </deadline>   <!-- use ISO 8601 format here -->
-    <node icon="2" expanded="false">
-        <title>child</title>
-        <note>another reminder!</note>
+<tree>
+    <task icon="1" expanded="true">
+        <title>Reminder</title>
+        <note>Don't forget me this weekend!</note>
+        <deadline> 202005201300 </deadline>
+        <task icon="2" expanded="false">
+            <title>child node</title>
+            <note>another reminder!</note>
+            <deadline> 202005211430 </deadline>
+            <task icon="76" expanded="false">
+				<title>2nd level </title>
+				<note> yet more notes</note>
+				<deadline>202006191700</deadline>
+            </task>   
+        </task> 
+    </task>
+    <task icon="3" expanded="false">
+        <title>another child</title>
+        <note>yet another reminder!</note>
         <deadline> 202005211430 </deadline>    
-    </node> 
-</node> 
+    </task> 
+</tree>
 
-<!-- use XML SAX: https://docs.python.org/3/library/xml.htm -->
 <!-- do we need created and last-edited fields ? -->

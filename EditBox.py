@@ -21,7 +21,6 @@ from PySide2.QtWidgets import *
 import time
 #******************************************************************************
 word = 'roboti'
-
 class SpellCheckWindow(QWidget):
     def __init__(self):
         QWidget.__init__(self)
@@ -47,8 +46,6 @@ class SpellCheckWindow(QWidget):
         self.suggestion1.clicked.connect(self.swap_word1)
         self.suggestion2.clicked.connect(self.swap_word2)
         self.suggestion3.clicked.connect(self.swap_word3)
-
-
 
     def swap_word1(self):
         word = suggest[0]

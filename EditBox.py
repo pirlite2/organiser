@@ -22,7 +22,7 @@ from QTextEdit import *
 class EditBox (QTextEdit):
 
     """
-     
+     test
 
     :version:
     :author:

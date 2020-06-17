@@ -15,9 +15,17 @@
 #  MA 02110-1301, USA.  
 #******************************************************************************
 
-from QTextEdit import *
+import sys
+import enchant
+from PySide2.QtWidgets import QApplication, QDialog, QLineEdit, QPushButton, QTextEdit
+
 
 #******************************************************************************
+class Spellcheck_alert(QDialog):
+
+    def __init__(self, parent=None):
+        super(Form, self).__init__(parent)
+        self.setWindowTitle("Spellchecking error")
 
 class EditBox (QTextEdit):
 
@@ -27,15 +35,29 @@ class EditBox (QTextEdit):
     :version:
     :author:
     """
+    word = "graan"
 
-    def spell_check(self):
+    def spell_check(word):
+
+        d = enchant.Dict("en_US")
+        
+        if d.check(word) is False:
+            app = QApplication(sys.argv)
+            # Create and show the form
+            form = Form()
+            form.show()
+            # Run the main Qt loop
+            sys.exit(app.exec_())
+           # d.suggest(word)
+
+
+
         """
-         
-
         @return  :
         @author
         """
         pass
+
 
 #******************************************************************************
 

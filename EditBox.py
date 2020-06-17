@@ -17,35 +17,34 @@
 
 import sys
 import enchant
-from PySide2.QtWidgets import (QLineEdit, QPushButton, QApplication,
-    QVBoxLayout, QDialog, QWidget, QLabel)
+from PySide2.QtWidgets import *
 import time
 #******************************************************************************
 word = 'pinaple'
 
 class Window(QWidget):
     def __init__(self):
-        super().__init__()
- 
+        QWidget.__init__(self)
+        self.layout =  QVBoxLayout()
         self.setWindowTitle("Spellchecking Error")
         self.setGeometry(300,300, 500,400)
         self.setMinimumHeight(100)
         self.setMinimumWidth(250)
         self.setMaximumHeight(200)
         self.setMaximumWidth(800)
-        self.label1 = QLabel("Word is spelled incorrectly")
-        self.label1.show()
+        self.addWidget(QLabel(text="%s seems to be spelled inccorectly, please choose an option" % word))
 
-myApp = QApplication(sys.argv)
-window = Window()
-window.show()
- 
-time.sleep(3)
-window.resize(600,400)
-#window.repaint()
- 
-myApp.exec_()
-sys.exit(0)   
+
+d = enchant.Dict("en_GB")
+if d.check(word) is False:
+    print(d.suggest(word))
+    myApp = QApplication(sys.argv)
+    window = Window()
+    window.show()
+    time.sleep(3)
+    window.resize(600,400)
+    myApp.exec_()
+    sys.exit(0)   
     # def spell_check(word):
 
     #    d = enchant.Dict("en_US")

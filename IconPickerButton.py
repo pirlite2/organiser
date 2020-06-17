@@ -33,6 +33,9 @@ class IconPickerDialog(QDialog):
 
         self.setWindowTitle("Select Icon")
 
+        self.iconIndex = iconIndex
+        self.treeIconsList = treeIconsList
+
         dialogLayout = QVBoxLayout()
 
         # Add list widget for icons
@@ -54,9 +57,6 @@ class IconPickerDialog(QDialog):
         okCancelLayout.addWidget(cancelButton)
         dialogLayout.addLayout(okCancelLayout)
         self.setLayout(dialogLayout)
-
-        self.iconIndex = iconIndex
-        self.treeIconsList = treeIconsList
 
         return
 
@@ -83,4 +83,43 @@ class IconPickerDialog(QDialog):
 
         return
 
+#******************************************************************************
+
+class IconPickerButton(QPushButton):
+    """
+    Dialog for selecting icon
+    :version:
+    :author: pir
+    """
+
+    def __init__(self, iconIndex, treeIconsList):
+    
+        super().__init__()
+
+        self.iconIndex = iconIndex
+        self.treeIconsList = treeIconsList
+        self.setIcon(treeIconsList[self.iconIndex])
+        self.pressed.connect(self.on_icon_button_pressed)
+
+        return
+        
     #--------------------------------------------------------------------------
+
+    def get_icon_index(self):
+
+        return self.iconIndex
+
+    #--------------------------------------------------------------------------
+
+    def on_icon_button_pressed(self):
+        """ Handler for icon button """
+        
+        iconPickerDialog = IconPickerDialog(self.iconIndex, self.treeIconsList)
+        if (iconPickerDialog.exec_() == QDialog.Accepted):
+            # Get selected icon index
+            self.iconIndex = iconPickerDialog.get_icon_index()
+            self.setIcon(self.treeIconsList[self.iconIndex])
+
+        return
+
+#******************************************************************************

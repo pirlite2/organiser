@@ -49,13 +49,13 @@ class SpellCheckWindow(QWidget):
 
     def swap_word1(self):
         word = suggest[0]
-       
+        print("Word is now %s" % word)
     def swap_word2(self):
         word = suggest[1]
-        
+        print("Word is now %s" % word)
     def swap_word3(self):
         word = suggest[2]
-        
+        print("Word is now %s" % word)
 d = enchant.Dict("en_GB")
 suggest = d.suggest(word)
 listsize = len(suggest)

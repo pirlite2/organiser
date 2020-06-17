@@ -17,18 +17,16 @@
 #  MA 02110-1301, USA. 
 #******************************************************************************
 
-from sys import exit
+import sys
+import os
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QSplitter
 from PySide2.QtWidgets import QMenuBar, QMenu, QAction
-from PySide2.QtWidgets import QToolBar, QInputDialog
-from PySide2.QtWidgets import QStatusBar   #Why make this line to comment?
+from PySide2.QtWidgets import QToolBar #, QInputDialog
+#from PySide2.QtWidgets import QStatusBar   #Why make this line to comment? A: Because it's not needed
+from PySide2.QtWidgets import QFileDialog
 
 from ItemTree import *
-
-from PySide2.QtWidgets import QFileDialog
-import os
-import ItemTree
 
 #******************************************************************************
 
@@ -52,8 +50,9 @@ class MainWindow(QMainWindow):
         # Create menu bar & menus
         self.fileMenu = self.menuBar().addMenu("&File")
 
-        self.createNewNoteMenuAction = self.fileMenu.addAction("&Create New Note")
-        self.createNewNoteMenuAction.triggered.connect(self.on_create_new_note_action)
+        # Not needed! 
+        #self.createNewNoteMenuAction = self.fileMenu.addAction("&Create New Note")
+        #self.createNewNoteMenuAction.triggered.connect(self.on_create_new_note_action)
 
         self.openMenuAction = self.fileMenu.addAction("&Open")
         self.openMenuAction.triggered.connect(self.on_open_action)    # New-style connect!
@@ -63,6 +62,10 @@ class MainWindow(QMainWindow):
 
         self.saveAsMenuAction = self.fileMenu.addAction("&Save as")
         self.saveAsMenuAction.triggered.connect(self.on_save_as_action)
+        self.fileMenu.addSeparator()
+
+        self.aboutMenuAction = self.fileMenu.addAction("&About") #record everybody's contributions
+        self.aboutMenuAction.triggered.connect(self.on_about_action)
         self.fileMenu.addSeparator()
 
         self.setPreferencesMenuAction = self.fileMenu.addAction("Set Preferences")
@@ -95,7 +98,7 @@ class MainWindow(QMainWindow):
         self.splitter.setHandleWidth(2)
 
         # Configure item tree widget
-        self.itemTree = ItemTree.ItemTree()  #find the itemtree
+        self.itemTree = ItemTree()  #find the itemtree
         self.splitter.addWidget(self.itemTree)      
         self.splitter.addWidget(self.itemTree.editBox)
         self.mainLayout.addWidget(self.splitter)
@@ -108,23 +111,28 @@ class MainWindow(QMainWindow):
         self.mainWidget = QWidget()
         self.mainWidget.setLayout(self.mainLayout)
         self.setCentralWidget(self.mainWidget)
+
+        # Parameters
+        self.filePath = ""
+
+        self.platform = sys.platform
+
+        if self.platform == "win32":
+            self.directory = "C:\\Users\\" # TODO: Hong - Is there any Python equivalent to __linux__ ?? If so, set self.directory = /home for Linux users
+        else:
+            self.directory = "/home"          
+        
+        self.dirtyBit = False   # Indicates if tree has been modified
         
         return
         
     #--------------------------------------------------------------------------
-    def on_create_new_note_action(self):
-        return
-
-    def on_save_action(self):
-        return
-
-    def on_save_as_action(self):
-        return
-#----------------------------------------------------------
+    
     def on_insert_item_action(self):
         """Handler for 'add item' action"""
 
         self.itemTree.insert_task_item(True, False)
+        self.dirtyBit = True
         print("adding an item")
 
         return
@@ -135,6 +143,7 @@ class MainWindow(QMainWindow):
         """Handler for 'add child item' action"""
 
         self.itemTree.insert_task_item(True, True)
+        self.dirtyBit = True
         print("add a child item")
 
         return
@@ -142,60 +151,136 @@ class MainWindow(QMainWindow):
    #--------------------------------------------------------------------------
 
     def on_delete_item(self):
-        """   """
+        """ Handler for "Delete" action """
 
         self.itemTree.delete_task_item()
+        self.dirtyBit = True
 
         return
 
-   #--------------------------------------------------------------------------
+    #--------------------------------------------------------------------------
 
     def on_edit_item(self):
         """Handler for 'Open' menu item"""
 
         self.itemTree.edit_task_item()
+        self.dirtyBit = True
 
         return
 
-   #--------------------------------------------------------------------------
+    #--------------------------------------------------------------------------
+
+    def open_file(self, filePath):
+
+        # Read XML file
+        # TODO - Chung Tung Ching 
+
+        # test
+        f = open(self.filePath) # Read the file
+        lines = f.read()
+        print(lines)
+        f.close()
+        # test 
+
+        self.dirtyBit = False     
+
+        return
+
+    #--------------------------------------------------------------------------    
     
     def on_open_action(self):
         """Handler for 'open' action"""
-        
-        fileName_choose,filetype = QFileDialog.getOpenFileName(self,
-                                    "Open",
-                                    "C:\\Users\\", # Open the file from the start path
-                                    "All Files (*);;Text Files (*.txt);;Word Files (*.docx)" )
+
+        # Get file path    
+        (self.filePath, filetype) = QFileDialog.getOpenFileName(self, "Open", self.directory, "Organiser file (*.xml)")
         print("open file item") # test
 
-        if fileName_choose == "":
+        if (self.filePath == ""):
             print("\nDeslect the choose")
             return
 
-        print("\nThe file you choosed:")
-        print(fileName_choose)
-        print("File type: ",filetype)
+        print("\nThe file you choosed is:")  # Irregular English verb :-) A: It has been changed
+        print(self.filePath)
+        print("File type: ", filetype)
+             
+        # Separate self.filePath into self.directory + fileName strings: consider LUnix as well as Windows file paths
+        # TODO - Hong        
+        if self.platform == "win32":
+            fileName = self.filePath.split("/")[-1] #Extract the file name from the address-WHAT DOES THIS DO?A:To get filename not include the address
+        else:
+            fileName = self.filePath.split("/")[-1] #TODO Change it later, do not konw right now    
+
+        #fileName = "dummy String"
+        self.setWindowTitle("Organiser - " + fileName)
         
-        f = open(fileName_choose) # Read the file
-        lines = f.read()
-        #add_task_item(lines)      # add_task_item 
-        print(lines)    #test
-        f.close()
-
-        fn=fileName_choose.split("/")[-1] #Extract the file name from the address
-
-        self.itemTree.add_task_item(0, fn, lines, 0, False, 0)
-
-        """
-        # Get file name
-        self.filename = "???"
-        
-        # Read XML file        
-        """
+        self.open_file(self.filePath)
+      
         return
         
     #--------------------------------------------------------------------------
+
+    def save_file(self, filePath):
+
+        # Write XML file
+        # TODO 
+
+        self.dirtyBit = False
+
+        return
+
+    #--------------------------------------------------------------------------
+
+    def on_save_action(self):
    
+        if (self.filePath == ""):
+            # TODO - launch QFileDialog to prompt use for valid file name
+            #self.filePath = ...
+            (self.filePath, _) = QFileDialog.getOpenFileName(self, "Save", self.directory, "Organiser file (*.xml)")
+            print("open file item") # test
+
+            if (self.filePath == ""):
+                print("\nDeslect the choose")
+                return
+
+            print("saving as", self.filePath)
+
+        self.save_file(self.filePath)
+        self.dirtyBit = False
+
+        return
+
+    #--------------------------------------------------------------------------
+
+    def on_save_as_action(self):
+
+        # Get file path to save to
+        # TODO - Hong
+
+        # self.save_file(newFilePath)
+        # self.filepath = newFilePath
+        
+        (self.filePath, _) = QFileDialog.getOpenFileName(self, "Save as", self.directory, "Organiser file (*.xml)") #dialog directly
+        print("open file item") # test
+
+        if (self.filePath == ""):
+            print("\nDeslect the choose")
+            return
+
+        print("saving as", self.filePath)
+
+        self.save_file(self.filePath)
+        self.dirtyBit = False
+
+        return
+
+    #--------------------------------------------------------------------------
+
+    def on_about_action(self):
+
+        return
+
+    #--------------------------------------------------------------------------
+      
     def on_set_preferences_action(self):
         """Handler for 'Set preferences' menu action"""
 
@@ -209,8 +294,12 @@ class MainWindow(QMainWindow):
         """Handler for 'quit' action"""
         
         # Check whether data needs to be auto-saved on exit
+        if (self.dirtyBit):
+            print("Prompt for saving file")
+            # call message box? - TODO - Hong
+            self.save_file(self.filePath)
 
-        #print("quitting application")
+        print("quitting application")
         self.close()
         
         return     

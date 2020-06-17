@@ -15,27 +15,48 @@
 #  MA 02110-1301, USA.  
 #******************************************************************************
 
-from QTextEdit import *
+import sys
+import enchant
+from PySide2.QtWidgets import *
+import time
+#******************************************************************************
+word = 'pinaple'
+
+class SpellCheckWindow(QWidget):
+    def __init__(self):
+        QWidget.__init__(self)
+        self.setWindowTitle("Spellchecking Error")
+        self.setGeometry(300,300, 500,400)
+        self.setMinimumHeight(100)
+        self.setMinimumWidth(250)
+        self.setMaximumHeight(200)
+        self.setMaximumWidth(800)
+
+        self.text = QLabel("%s seems to be spelled inccorectly, please choose an option" % word)
+        self.suggestion1 = QPushButton("%s" % suggest[0])
+        self.suggestion2 = QPushButton("%s" % suggest[1])
+        #self.suggestion3 = QPushButton("%s" % suggest[2])
+
+        self.layout =  QVBoxLayout()
+        self.layout.addWidget(self.text)
+        self.layout.addWidget(self.suggestion1)
+        self.layout.addWidget(self.suggestion2)
+        #self.layout.addWidget(self.suggestion3)       
+        
+
+
+
+
+d = enchant.Dict("en_GB")
+suggest = d.suggest(word)
+if d.check(word) is False:
+    print(d.suggest(word))
+    myApp = QApplication(sys.argv)
+    window = SpellCheckWindow()
+    window.show()
+    time.sleep(3)
+    window.resize(600,400)
+    myApp.exec_()
+    sys.exit(0)   
 
 #******************************************************************************
-
-class EditBox (QTextEdit):
-
-    """
-     
-
-    :version:
-    :author:
-    """
-
-    def spell_check(self):
-        """
-         
-
-        @return  :
-        @author
-        """
-        pass
-
-#******************************************************************************
-

@@ -182,10 +182,10 @@ class ItemTree (QTreeWidget):
         deadline = targetItem.deadline
         editTaskDialog = EditTaskItem(self.defaultIconIndex, title, deadline, self.treeIconsList)
         if (editTaskDialog.exec_() == QDialog.Accepted):
-            print("edit accepted")
+            #print("edit accepted")
             (iconIndex, title, deadline) = editTaskDialog.get_item_values()
         else:
-            print("edit rejected")
+            #print("edit rejected")
             return
   
         targetItem.setIcon(0, self.treeIconsList[iconIndex])
@@ -278,8 +278,6 @@ class ItemTree (QTreeWidget):
         """
 
         self.edit_task_item()
-
-        #print(currentItem.text(0), "task double-clicked")   # test
 
         return
     

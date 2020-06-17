@@ -18,17 +18,15 @@
 #******************************************************************************
 
 from sys import exit
+import os
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QSplitter
 from PySide2.QtWidgets import QMenuBar, QMenu, QAction
-from PySide2.QtWidgets import QToolBar, QInputDialog
-from PySide2.QtWidgets import QStatusBar   #Why make this line to comment?
+from PySide2.QtWidgets import QToolBar #, QInputDialog
+#from PySide2.QtWidgets import QStatusBar   #Why make this line to comment? A: Because it's not needed
+from PySide2.QtWidgets import QFileDialog
 
 from ItemTree import *
-
-from PySide2.QtWidgets import QFileDialog
-import os
-import ItemTree
 
 #******************************************************************************
 
@@ -96,7 +94,7 @@ class MainWindow(QMainWindow):
         self.splitter.setHandleWidth(2)
 
         # Configure item tree widget
-        self.itemTree = ItemTree.ItemTree()  #find the itemtree
+        self.itemTree = ItemTree()  #find the itemtree
         self.splitter.addWidget(self.itemTree)      
         self.splitter.addWidget(self.itemTree.editBox)
         self.mainLayout.addWidget(self.splitter)

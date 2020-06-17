@@ -17,47 +17,40 @@
 
 import sys
 import enchant
-from PySide2.QtWidgets import QApplication, QDialog, QLineEdit, QPushButton, QTextEdit
-
-
+from PySide2.QtWidgets import (QLineEdit, QPushButton, QApplication,
+    QVBoxLayout, QDialog, QWidget, QLabel)
+import time
 #******************************************************************************
-class Spellcheck_alert(QDialog):
+word = 'pinaple'
 
-    def __init__(self, parent=None):
-        super(Form, self).__init__(parent)
-        self.setWindowTitle("Spellchecking error")
+class Window(QWidget):
+    def __init__(self):
+        super().__init__()
+ 
+        self.setWindowTitle("Spellchecking Error")
+        self.setGeometry(300,300, 500,400)
+        self.setMinimumHeight(100)
+        self.setMinimumWidth(250)
+        self.setMaximumHeight(200)
+        self.setMaximumWidth(800)
+        self.label1 = QLabel("Word is spelled incorrectly")
+        self.label1.show()
 
-class EditBox (QTextEdit):
+myApp = QApplication(sys.argv)
+window = Window()
+window.show()
+ 
+time.sleep(3)
+window.resize(600,400)
+#window.repaint()
+ 
+myApp.exec_()
+sys.exit(0)   
+    # def spell_check(word):
 
-    """
-     
-
-    :version:
-    :author:
-    """
-    word = "graan"
-
-    def spell_check(word):
-
-        d = enchant.Dict("en_US")
-        
-        if d.check(word) is False:
-            app = QApplication(sys.argv)
-            # Create and show the form
-            form = Form()
-            form.show()
-            # Run the main Qt loop
-            sys.exit(app.exec_())
+    #    d = enchant.Dict("en_US")
+       
+     #   if d.check(word) is False:
            # d.suggest(word)
 
-
-
-        """
-        @return  :
-        @author
-        """
-        pass
-
-
 #******************************************************************************
-

@@ -263,6 +263,7 @@ class MainWindow(QMainWindow):
             self.save_file(self.filePath)
 
         print("quitting application")
+        self.close()
         
         return     
 

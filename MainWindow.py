@@ -185,7 +185,7 @@ class MainWindow(QMainWindow):
         fn=fileName_choose.split("/")[-1] #Extract the file name from the address
 
         self.itemTree.add_task_item(0, fn, lines, 0, False, 0)
-        
+
         """
         # Get file name
         self.filename = "???"

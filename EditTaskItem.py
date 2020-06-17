@@ -15,11 +15,14 @@
 #  MA 02110-1301, USA.
 #******************************************************************************
 
-from PySide2.QtWidgets import QDialog, QLabel
+from PySide2.QtCore import QDate, QTime, QDateTime
+
+from PySide2.QtWidgets import QDialog, QLabel, QCheckBox
 from PySide2.QtWidgets import QVBoxLayout, QHBoxLayout
-from PySide2.QtWidgets import QPushButton, QLineEdit
+from PySide2.QtWidgets import QPushButton, QLineEdit, QDateTimeEdit 
 
 from IconPickerButton import IconPickerButton
+from Iso8601_Support import iso8601_to_tuple, tuple_to_iso8601
 
 #******************************************************************************
 
@@ -57,26 +60,48 @@ class EditTaskItem (QDialog):
         iconTitleLayout.addWidget(self.titleEditor)
 
         # Add schedule setting
-        #TODO
+        dateTimeLayout = QHBoxLayout()
+        dateTimeLayout.addStretch()
 
+        self.deadlineCheckBox = QCheckBox("Set deadline?")
+        dateTimeLayout.addWidget(self.deadlineCheckBox)
+        self.deadlineCheckBox.stateChanged.connect(self.on_checkbox_changed)
 
+        if (self.deadline != 0):
+            self.deadlineCheckBox.setChecked(True)
+            (hours, minutes, day, month, year) = iso8601_to_tuple(self.deadline) 
+            deadlineDateTime = QDateTime(QDate(year, month, day), QTime(hours, minutes))
+            self.dateTimeEditControl = QDateTimeEdit(deadlineDateTime)
+            self.dateTimeEditControl.setEnabled(True)
+        else:
+            self.deadlineCheckBox.setChecked(False)
+            self.dateTimeEditControl = QDateTimeEdit(QDateTime.currentDateTime())
+            self.dateTimeEditControl.setEnabled(False)
+        
+        self.dateTimeEditControl.setCalendarPopup(True)
+        self.dateTimeEditControl.setDisplayFormat("hh:mm @ dd-MMM-yyyy")
+
+        dateTimeLayout.addWidget(self.dateTimeEditControl)
+        dateTimeLayout.addStretch()
       
         # Setup OK and Cancel buttons
-        self.okButton = QPushButton("OK", self)
-        self.okButton.pressed.connect(self.on_ok)         
-        self.cancelButton = QPushButton("Cancel", self)
-        self.cancelButton.pressed.connect(self.on_cancel)
-        self.buttonLayout = QHBoxLayout()
-        self.buttonLayout.addStretch()
-        self.buttonLayout.addWidget(self.okButton)
-        self.buttonLayout.addWidget(self.cancelButton)
+        okButton = QPushButton("OK", self)
+        okButton.pressed.connect(self.on_ok)         
+        cancelButton = QPushButton("Cancel", self)
+        cancelButton.pressed.connect(self.on_cancel)
+        buttonLayout = QHBoxLayout()
+        buttonLayout.addStretch()
+        buttonLayout.addWidget(okButton)
+        buttonLayout.addWidget(cancelButton)
                       
-        self.dialogLayout = QVBoxLayout()
-        self.dialogLayout.addLayout(iconTitleLayout)
-        self.dialogLayout.addStretch()
-        self.dialogLayout.addLayout(self.buttonLayout)
+        dialogLayout = QVBoxLayout()
+        dialogLayout.addLayout(iconTitleLayout)
+        dialogLayout.addStretch()
+        dialogLayout.addLayout(dateTimeLayout)
+        dialogLayout.addStretch()   
+        dialogLayout.addLayout(buttonLayout)
 
-        self.setLayout(self.dialogLayout)
+        self.setLayout(dialogLayout)
         self.titleEditor.setFocus()
                
         return
@@ -91,14 +116,23 @@ class EditTaskItem (QDialog):
     #--------------------------------------------------------------------------
 
     def on_ok(self):
-        """Handler for EditTaskitem 'OK' button"""
-                    
-        #print("OK button pushed!")
-        
+        """ Handler for EditTaskitem 'OK' button """
+                          
         # Get/update values from controls
         self.iconIndex = self.iconButton.get_icon_index()
-        self.deadline = 123
         self.title = self.titleEditor.text()       
+
+        # Get deadline from dataTimeEditControl
+        if (self.deadlineCheckBox.isChecked()):
+            # Extract deadline
+            date = self.dateTimeEditControl.date()
+            time = self.dateTimeEditControl.time()
+            dateTimeTuple = (time.hour(), time.minute(), date.day(), date.month(), date.year())
+            self.deadline = tuple_to_iso8601(dateTimeTuple)
+        else:
+            # No deadline set
+            self.deadline = 0
+
         self.accept()
         
         return
@@ -107,11 +141,20 @@ class EditTaskItem (QDialog):
 
     def on_cancel(self):
         """Handler for EditTaskitem 'Cancel' button"""
-                    
-        #print("Cancel button pushed!")
-        
+                          
         self.reject()
         
         return
     
     #--------------------------------------------------------------------------
+
+    def on_checkbox_changed(self, state):
+        """ Handler for self.deadlineCheckBox """
+        
+        # Toggle check box state
+        checkBoxState = self.deadlineCheckBox.isChecked()
+        self.dateTimeEditControl.setEnabled(checkBoxState)
+
+        return
+
+#******************************************************************************

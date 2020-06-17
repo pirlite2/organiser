@@ -61,6 +61,8 @@ class SpellCheckWindow(QWidget):
         
 d = enchant.Dict("en_GB")
 suggest = d.suggest(word)
+listsize = len(suggest)
+print("List size is %i" % listsize)
 if d.check(word) is False:
     print(d.suggest(word))
     myApp = QApplication(sys.argv)

@@ -30,7 +30,7 @@ class Setpreference(QDialog):
 
 
       iconIndexbox = QSpinBox()
-      treeFontbox = QSpinBox()
+      treeFontbox=QPushButton("Treefont change")
       treeFontSizebox = QSpinBox()
 
       grid = QGridLayout()
@@ -42,9 +42,8 @@ class Setpreference(QDialog):
       iconIndexbox.valueChanged.connect(self.change1)
 
       grid.addWidget(treeFont, 2, 0)
+      treeFontbox.clicked.connect(self.getFont)
       grid.addWidget(treeFontbox, 2, 1)
-      treeFontbox.setValue(30)
-      treeFontbox.valueChanged.connect(self.change2)
 
       grid.addWidget(treeFontSize, 3, 0)
       grid.addWidget(treeFontSizebox, 3, 1)
@@ -65,7 +64,12 @@ class Setpreference(QDialog):
  #--------------------------------------------------------------------------
   
 
+    def getFont(self):
+        font,ok=QFontDialog.getFont()
+        if ok:
+          self.fle.setFont(font)
 
+          return
       
 
  #--------------------------------------------------------------------------
@@ -109,7 +113,6 @@ class Setpreference(QDialog):
                     
         print("OK button pushed!")
         self.iconIndex = self.iconIndexbox.value()
-        self.treefont = self.treeFontbox.value()
         self.treeFontSize = self.treeFontSizebox.value()	# test to see if changed value can be returned
         
         self.accept()
@@ -128,7 +131,7 @@ class Setpreference(QDialog):
         return
 
 
-if __name__=="__main__":
+if __name__=="__main__":#test
     app = QApplication(sys.argv)
     ex = Setpreference()
     sys.exit(app.exec_())

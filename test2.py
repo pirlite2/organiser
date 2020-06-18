@@ -21,7 +21,7 @@ class Setpreference(QDialog):
 
 
       iconIndexbox = QSpinBox()
-      treeFontbox = QSpinBox()
+      treeFontbox=QPushButton("Treefont change")
       treeFontSizebox = QSpinBox()
 
       grid = QGridLayout()
@@ -32,8 +32,11 @@ class Setpreference(QDialog):
       iconIndexbox.setValue(30)
 
       grid.addWidget(treeFont, 2, 0)
+      treeFontbox.clicked.connect(self.getFont)
       grid.addWidget(treeFontbox, 2, 1)
-      treeFontbox.setValue(30)
+     
+
+
 
       grid.addWidget(treeFontSize, 3, 0)
       grid.addWidget(treeFontSizebox, 3, 1)
@@ -48,6 +51,13 @@ class Setpreference(QDialog):
       self.setGeometry(500, 500, 500, 300)
       self.setWindowTitle('Setpreference')
       self.show()
+
+
+  def getFont(self):
+        font,ok=QFontDialog.getFont()
+        if ok:
+          self.fle.setFont(font)
+          return
 
   def on_ok(self):
         """Handler for ''OK'' button"""

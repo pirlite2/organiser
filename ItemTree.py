@@ -17,8 +17,8 @@
 
 import os
 
-from PySide2.QtGui import QIcon, QFont, QTextDocument
-from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog
+from PySide2.QtGui import QIcon, QFont, QTextDocument, Qcolor
+from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog, QInputDialog, QTreeWidgetItem, QMessageBox
 
 from TaskItem import TaskItem
 from NoteEditor import NoteEditor
@@ -205,7 +205,44 @@ class ItemTree (QTreeWidget):
         @return:
         @author:
         """
+        # get all notes with deadlines, put into a list
+        notesList = []
 
+        # go through the tree, collect  notes with deadlines
+        def iterateFunc(parent):
+            child_count = parent.childCount()
+            for i in range(child_count):
+                item = parent.child(i)
+
+                if item.nodetype == 'note' and item.deadline != 'none':
+
+                    notesList.append(item)
+
+                # if node type is folder，recursive call all the item
+                if item.nodetype == 'folder':
+                    iterateFunc(item)
+
+        root = self.invisibleRootItem()
+        iterateFunc(root)
+
+        # show actual schedule
+        def bubbleSort(arr):
+            length = len(arr)
+
+            for j in range(length - 1, 0, -1):
+                for i in range(0, length - 1):
+                    if arr[i].deadline > arr[i + 1].deadline:
+                        arr[i], arr[i + 1] = arr[i + 1], arr[i]
+
+            return arr
+
+        bubbleSort(notesList)
+        infoList = [f'   {item.deadline} {item.title}           ' for item in notesList]
+
+        QMessageBox.information(
+            self,
+            'Task Schedule',
+            '\n'.join(infoList))
         return
     
     #--------------------------------------------------------------------------
@@ -213,9 +250,26 @@ class ItemTree (QTreeWidget):
     def search_tree(self):
         """  
         Search tree for specified text in title
-        @return:
-        @author:
+        @return:None
+        @author:Tong Wang
         """
+        # recursive function, Recursively calls the function to complete the search filtering of the entire tree
+        def searchFunc(parent):
+            child_count = parent.childCount()
+            for i in range(child_count):
+                item = parent.child(i)
+                if keywords in item.text(0):
+                    item.setBackgroundColor(0, QColor('#c9e9e3'))
+                else:
+                    item.setBackgroundColor(0, QColor('white'))
+
+                if item.nodetype == 'folder':
+                    searchFunc(item)
+
+        if keywords == '':
+            keywords = '$%#$%@#$@#$@#$!!!$' # Make an impossible string in reality to make a mismatch
+        root = self.invisibleRootItem()
+        searchFunc(root)
 
         return
     
@@ -225,8 +279,51 @@ class ItemTree (QTreeWidget):
         """
         Search notes for specified text
         @return:
-        @author:
+        @author:Tong Wang
         """
+        te = self.ui.textEdit
+
+        cursor = te.textCursor()
+
+        # clear format
+        cursor.select(QtGui.QTextCursor.Document)
+        cursor.setCharFormat(QtGui.QTextCharFormat())
+        cursor.clearSelection()
+        te.setTextCursor(cursor)
+
+
+        # Setup the desired format for matches
+        format = QtGui.QTextCharFormat()
+        format.setBackground(QtGui.QBrush(QtGui.QColor("#6ac06e")))
+
+        searchString = self.ui.keywords_2.text()
+        # Empty string, empty selection
+        if searchString == '':
+            # Clear format
+            cursor.select(QtGui.QTextCursor.Document)
+            cursor.setCharFormat(QtGui.QTextCharFormat())
+            cursor.clearSelection()
+            te.setTextCursor(cursor)
+            return
+
+        # Process the displayed document
+        pos = 0
+
+        lenOfs = len(searchString)
+        while True:
+            index = te.toPlainText().find(searchString,pos)
+            if index < 0:
+                break
+
+            cursor.setPosition(index)
+
+            cursor.movePosition(
+                QtGui.QTextCursor.Right,
+                QtGui.QTextCursor.MoveMode.KeepAnchor,
+                lenOfs)
+            cursor.mergeCharFormat(format)
+
+            pos = index + lenOfs
 
         return
 

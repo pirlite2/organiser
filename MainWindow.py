@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
     """
     Main application window
     :version:
-    :author: pir and Hong
+    :author: pir & Hong Zhou
     """
    #--------------------------------------------------------------------------
 
@@ -51,10 +51,6 @@ class MainWindow(QMainWindow):
 
         # Create menu bar & menus
         self.fileMenu = self.menuBar().addMenu("&File")
-
-        # Not needed! 
-        #self.createNewNoteMenuAction = self.fileMenu.addAction("&Create New Note")
-        #self.createNewNoteMenuAction.triggered.connect(self.on_create_new_note_action)
 
         self.openMenuAction = self.fileMenu.addAction("&Open")
         self.openMenuAction.triggered.connect(self.on_open_action)    # New-style connect!
@@ -287,13 +283,13 @@ Interface to XML: Chung Tung Ching
 
 SetPreferences: Yuqi Jin
 
-Implement show_schedule()＆search_tree(): Tong Wang
+Implement show_schedule() ＆ search_tree(): Tong Wang
 
 ItemTree and TaskItem: Samuel Maher
 
 NoteEditor and EditBox: Joseph-William Szetu
 
-Implement spell_check(): Andrei Georgescu'''
+Spell_checker: Andrei Georgescu'''
 
         QMessageBox.about(self,"Developer List",aboutmessage)
 

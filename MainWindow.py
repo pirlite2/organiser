@@ -30,7 +30,8 @@ from PySide2.QtWidgets import QMessageBox
 
 from ItemTree import *
 from pathlib import Path
-
+import xml_R
+import xml.sax
 #******************************************************************************
 
 class MainWindow(QMainWindow):

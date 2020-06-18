@@ -46,4 +46,4 @@ if (__name__ =="__main__"):
     parser.setFeature(xml.sax.handler.feature_namespaces, 0)
     Handler =  readHandler()
     parser.setContentHandler(Handler)
-    parser.parse("/home/chingtung/文件/organiser-development/initial-xml-sketch.xml")
+    parser.parse(self.filePath)

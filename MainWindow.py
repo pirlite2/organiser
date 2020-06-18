@@ -26,7 +26,10 @@ from PySide2.QtWidgets import QToolBar #, QInputDialog
 #from PySide2.QtWidgets import QStatusBar   #Why make this line to comment? A: Because it's not needed
 from PySide2.QtWidgets import QFileDialog
 
+from PySide2.QtWidgets import QMessageBox
+
 from ItemTree import *
+from pathlib import Path
 
 #******************************************************************************
 
@@ -36,7 +39,6 @@ class MainWindow(QMainWindow):
     :version:
     :author: pir and Hong
     """
-
    #--------------------------------------------------------------------------
 
     def __init__(self):
@@ -113,17 +115,11 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.mainWidget)
 
         # Parameters
+        # TODO: Hong - Is there any Python equivalent to __linux__ ?? If so, set self.directory = /home for Linux users
         self.filePath = ""
+        self.directory = str(Path.home()) #Use pathlib to solve the problem
+        self.dirtyBit = False # Indicates if tree has been modified
 
-        self.platform = sys.platform
-
-        if self.platform == "win32":
-            self.directory = "C:\\Users\\" # TODO: Hong - Is there any Python equivalent to __linux__ ?? If so, set self.directory = /home for Linux users
-        else:
-            self.directory = "/home"          
-        
-        self.dirtyBit = False   # Indicates if tree has been modified
-        
         return
         
     #--------------------------------------------------------------------------
@@ -190,25 +186,30 @@ class MainWindow(QMainWindow):
     
     def on_open_action(self):
         """Handler for 'open' action"""
-
-        # Get file path    
-        (self.filePath, filetype) = QFileDialog.getOpenFileName(self, "Open", self.directory, "Organiser file (*.xml)")
-        print("open file item") # test
+        # TODO - Hong
+        # Get file path
+        (self.filePath,filetype) = QFileDialog.getOpenFileName(self, "Open", self.directory, "Organiser file (*.xml);;Text Files (*.txt)")
+        print("open file item") # Add txt for test
 
         if (self.filePath == ""):
             print("\nDeslect the choose")
             return
 
-        print("\nThe file you choosed is:")  # Irregular English verb :-) A: It has been changed
+        # Use the pathlib package to deal with the different os file system
+        # and get only the "dummy string.txt" part file name
+
+        print("\nThe file you choosed is:")
         print(self.filePath)
         print("File type: ", filetype)
              
         # Separate self.filePath into self.directory + fileName strings: consider LUnix as well as Windows file paths
-        # TODO - Hong        
-        if self.platform == "win32":
-            fileName = self.filePath.split("/")[-1] #Extract the file name from the address-WHAT DOES THIS DO?A:To get filename not include the address
-        else:
-            fileName = self.filePath.split("/")[-1] #TODO Change it later, do not konw right now    
+        # TODO - Hong
+        fileName = Path(self.filePath).name
+        self.directory = self.filePath[0:len(self.filePath)-len(fileName)]
+        print("filename:")
+        print(fileName)
+        print("directory:")
+        print(self.directory)
 
         #fileName = "dummy String"
         self.setWindowTitle("Organiser - " + fileName)
@@ -233,7 +234,7 @@ class MainWindow(QMainWindow):
     def on_save_action(self):
    
         if (self.filePath == ""):
-            # TODO - launch QFileDialog to prompt use for valid file name
+            # TODO - Hong : launch QFileDialog to prompt use for valid file name
             #self.filePath = ...
             (self.filePath, _) = QFileDialog.getOpenFileName(self, "Save", self.directory, "Organiser file (*.xml)")
             print("open file item") # test
@@ -276,6 +277,25 @@ class MainWindow(QMainWindow):
     #--------------------------------------------------------------------------
 
     def on_about_action(self):
+        # TODO - Hong
+        aboutmessage = '''
+Tutor: Peter Rockett
+
+MainWindow: Hong Zhou
+
+Interface to XML: Chung Tung Ching
+
+SetPreferences: Yuqi Jin
+
+Implement show_schedule()＆search_tree(): Tong Wang
+
+ItemTree and TaskItem: Samuel Maher
+
+NoteEditor and EditBox: Joseph-William Szetu
+
+Implement spell_check(): Andrei Georgescu'''
+
+        QMessageBox.about(self,"Developer List",aboutmessage)
 
         return
 
@@ -292,17 +312,26 @@ class MainWindow(QMainWindow):
     
     def on_quit_action(self):
         """Handler for 'quit' action"""
-        
+        # TODO - Hong
         # Check whether data needs to be auto-saved on exit
         if (self.dirtyBit):
             print("Prompt for saving file")
-            # call message box? - TODO - Hong
-            self.save_file(self.filePath)
+            # call message box?
+            result = QMessageBox.information(self,"Quit","Do you want to save the file before exiting?",QMessageBox.Yes|QMessageBox.No,QMessageBox.Yes)
+            result = str(result)
+
+            if "Yes" in result:
+                print("Saved and Quit")
+                self.on_save_action()
+            else:
+                self.close()
+                print("The file didn't be saved!")
+                return
 
         print("quitting application")
         self.close()
         
-        return     
+        return
 
 #******************************************************************************
 
@@ -322,18 +351,3 @@ if __name__ == "__main__":
     exit(application.exec_())   # Not sure why this still has to be `exec_` with a trailing underscore?
 
 #******************************************************************************
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

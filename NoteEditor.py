@@ -16,10 +16,16 @@
 #******************************************************************************
 
 from PySide2.QtGui import QTextDocument
-from PySide2.QtWidgets import QWidget, QVBoxLayout, QTextEdit, QToolBar
+from PySide2.QtWidgets import *
+import EditBox
+import enchant
+import sys
+import time
+
+
 
 #******************************************************************************
-
+word = ''
 class NoteEditor(QWidget):
     """
     :version:
@@ -27,7 +33,10 @@ class NoteEditor(QWidget):
     """
 
     #--------------------------------------------------------------------------
-   
+
+
+    #--------------------------------------------------------------------------
+
     def __init__(self):
         super().__init__()
 
@@ -52,5 +61,15 @@ class NoteEditor(QWidget):
         self.noteEditBox.setDocument(document)
 
         return
-
+word = 'reckl'
 #******************************************************************************
+d = enchant.Dict("en_GB")
+suggest = EditBox.Spellcheck(word) ##suggesting corrections
+if d.check(word) is False: #if word is incorrect run spellcheker application
+    print(d.suggest(word)) #print suggestion list
+    myApp1 = QApplication(sys.argv) #running spellcheker loop
+    window = EdiBox.SpellCheckWindow()
+    window.show() #showing the window
+    time.sleep(3) #resize the window to parameters after 3 seconds
+    window.resize(600,400)
+    myApp1.exec_()

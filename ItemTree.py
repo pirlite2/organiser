@@ -203,7 +203,7 @@ class ItemTree (QTreeWidget):
         """
         Show the schedules for all items with assigned deadlines; ignore tasks without deadlines
         @return:
-        @author:
+        @author:Tong Wang
         """
         # get all notes with deadlines, put into a list
         notesList = []

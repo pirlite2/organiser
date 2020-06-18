@@ -40,10 +40,3 @@ class readHandler(xml.sax.ContentHandler):
             self.note = content
         elif self.CurrentData == "deadline":
             self.deadline = content
-
-if (__name__ =="__main__"):
-    parser=xml.sax.make_parser()
-    parser.setFeature(xml.sax.handler.feature_namespaces, 0)
-    Handler =  readHandler()
-    parser.setContentHandler(Handler)
-    parser.parse(self.filePath)

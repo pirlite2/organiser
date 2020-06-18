@@ -167,12 +167,17 @@ class MainWindow(QMainWindow):
 
         # Read XML file
         # TODO - Chung Tung Ching 
-
+        if (__name__ =="__main__"):
+            parser=xml.sax.make_parser()
+            parser.setFeature(xml.sax.handler.feature_namespaces, 0)
+            Handler =  xml_R.readHandler()
+            parser.setContentHandler(Handler)
+            parser.parse(filePath)
         # test
-        f = open(self.filePath) # Read the file
-        lines = f.read()
-        print(lines)
-        f.close()
+        #f = open(self.filePath) # Read the file
+        #lines = f.read()
+        #print(lines)
+        #f.close()
         # test 
 
         self.dirtyBit = False     
@@ -221,12 +226,7 @@ class MainWindow(QMainWindow):
 
         # Write XML file
         # TODO 
-        if (__name__ =="__main__"):
-            parser=xml.sax.make_parser()
-            parser.setFeature(xml.sax.handler.feature_namespaces, 0)
-            Handler =  xml_R.readHandler()
-            parser.setContentHandler(Handler)
-            parser.parse(filePath)
+
         
         self.dirtyBit = False
 

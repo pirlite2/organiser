@@ -20,8 +20,7 @@ import enchant
 from PySide2.QtWidgets import *
 import time
 #******************************************************************************
-word = 'pinaple'
-
+word = 'roboti'
 class SpellCheckWindow(QWidget):
     def __init__(self):
         QWidget.__init__(self)
@@ -35,20 +34,32 @@ class SpellCheckWindow(QWidget):
         self.text = QLabel("%s seems to be spelled inccorectly, please choose an option" % word)
         self.suggestion1 = QPushButton("%s" % suggest[0])
         self.suggestion2 = QPushButton("%s" % suggest[1])
-        #self.suggestion3 = QPushButton("%s" % suggest[2])
+        self.suggestion3 = QPushButton("%s" % suggest[2])
 
         self.layout =  QVBoxLayout()
+        self.setLayout(self.layout)
         self.layout.addWidget(self.text)
         self.layout.addWidget(self.suggestion1)
         self.layout.addWidget(self.suggestion2)
-        #self.layout.addWidget(self.suggestion3)       
+        self.layout.addWidget(self.suggestion3)
         
+        self.suggestion1.clicked.connect(self.swap_word1)
+        self.suggestion2.clicked.connect(self.swap_word2)
+        self.suggestion3.clicked.connect(self.swap_word3)
 
-
-
-
+    def swap_word1(self):
+        word = suggest[0]
+        print("Word is now %s" % word)
+    def swap_word2(self):
+        word = suggest[1]
+        print("Word is now %s" % word)
+    def swap_word3(self):
+        word = suggest[2]
+        print("Word is now %s" % word)
 d = enchant.Dict("en_GB")
 suggest = d.suggest(word)
+listsize = len(suggest)
+print("List size is %i" % listsize)
 if d.check(word) is False:
     print(d.suggest(word))
     myApp = QApplication(sys.argv)

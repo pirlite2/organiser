@@ -117,6 +117,7 @@ class ItemTree (QTreeWidget):
                     newTaskItem = TaskItem(parentItem)
 
         # Add TaskItem to tree widget
+        newTaskItem.iconIndex = iconIndex
         newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
         newTaskItem.setText(0, title)
         newTaskItem.note = QTextDocument()
@@ -188,6 +189,8 @@ class ItemTree (QTreeWidget):
             #print("edit rejected")
             return
   
+        # Update target item properties
+        targetItem.iconIndex = iconIndex
         targetItem.setIcon(0, self.treeIconsList[iconIndex])
         targetItem.setText(0, title)
         targetItem.deadline = deadline        
@@ -238,7 +241,7 @@ class ItemTree (QTreeWidget):
         preferenceDialog = SetPreferences()       
         preferenceDialog.set_tree_defaults(self.defaultTreeFont, self.defaultTreeFontSize, self.defaultIconIndex)
         if(preferenceDialog.exec_() == QDialog.Accepted):
-			# Update tree parameters
+            # Update tree parameters
             print("accepted")
            
             (self.defaultTreeFont, self.defaultTreeFontSize, self.defaultIconIndex) = preferenceDialog.get_tree_defaults()

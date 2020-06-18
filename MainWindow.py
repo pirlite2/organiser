@@ -220,7 +220,13 @@ class MainWindow(QMainWindow):
 
         # Write XML file
         # TODO 
-
+        if (__name__ =="__main__"):
+            parser=xml.sax.make_parser()
+            parser.setFeature(xml.sax.handler.feature_namespaces, 0)
+            Handler =  xml_R.readHandler()
+            parser.setContentHandler(Handler)
+            parser.parse(filePath)
+        
         self.dirtyBit = False
 
         return

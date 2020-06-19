@@ -1,61 +1,78 @@
 #******************************************************************************
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#  
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#  
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
-#******************************************************************************
+# Insert licence here!
 
-from PySide2.QtWidgets import QDialog 
-from PySide2.QtWidgets import QVBoxLayout, QHBoxLayout
-from PySide2.QtWidgets import QPushButton
+
+#******************************************************************************
+import sys
+from PySide2.QtWidgets import *
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+
 
 #******************************************************************************
 
-class SetPreferences (QDialog):
-    """
-    
-    :version:
-    :author:
-    """
 
     #--------------------------------------------------------------------------
     
+class Setpreference(QDialog):
     def __init__(self):
-        super().__init__()
-        
-        self.setWindowTitle("Set Preferences")
+      super().__init__()
+      self.initUI()
 
-        self.dialogLayout = QVBoxLayout()
+    def initUI(self):
+      iconIndex = QLabel('iconIndex:')
+      treeFont = QLabel('treeFont:')
+      treeFontSize = QLabel('treeFontSize:')
+      okButton = QPushButton("OK")
+      okButton.pressed.connect(self.on_ok)
+      cancelButton = QPushButton("Cancel")
+      cancelButton.pressed.connect(self.on_cancel)
 
-        # Setup OK and Cancel buttons
-        self.okButton = QPushButton("OK", self)
-        self.okButton.pressed.connect(self.on_ok)         
-        self.cancelButton = QPushButton("Cancel", self)
-        self.cancelButton.pressed.connect(self.on_cancel)
-        self.buttonLayout = QHBoxLayout()
-        self.buttonLayout.addStretch()
-        self.buttonLayout.addWidget(self.okButton)
-        self.buttonLayout.addWidget(self.cancelButton)
-                      
-        self.dialogLayout.addStretch()
-        self.dialogLayout.addLayout(self.buttonLayout)
 
-        self.setLayout(self.dialogLayout)
-               
-        return
-        
-    #--------------------------------------------------------------------------
+      iconIndexbox = QSpinBox()
+      treeFontbox=QPushButton("Treefont change")
+      treeFontSizebox = QSpinBox()
+
+      grid = QGridLayout()
+      grid.setSpacing(10)
+
+      grid.addWidget(iconIndex, 1, 0)
+      grid.addWidget(iconIndexbox, 1, 1)
+      iconIndexbox.setValue(30)
+      iconIndexbox.valueChanged.connect(self.change1)
+
+      grid.addWidget(treeFont, 2, 0)
+      treeFontbox.clicked.connect(self.getFont)
+      grid.addWidget(treeFontbox, 2, 1)
+
+      grid.addWidget(treeFontSize, 3, 0)
+      grid.addWidget(treeFontSizebox, 3, 1)
+      treeFontSizebox.setValue(12)
+      treeFontSizebox.valueChanged.connect(self.change3)
+
+      grid.addWidget(okButton, 4, 0)
+      grid.addWidget(cancelButton, 4,1)
+
+
+      self.setLayout(grid)
+
+      self.setGeometry(500, 500, 500, 300)
+      self.setWindowTitle('Setpreference')
       
+      return
+ 
+ #--------------------------------------------------------------------------
+  
+
+    def getFont(self):
+        font,ok=QFontDialog.getFont()
+        if ok:
+          self.fle.setFont(font)
+
+          return
+      
+
+ #--------------------------------------------------------------------------
     def set_tree_defaults(self, treeFont, treeFontSize, iconIndex):
         """ Sets tree parameters in ItemTree instance """
         
@@ -71,14 +88,32 @@ class SetPreferences (QDialog):
         """ Gets existing tree parameters from ItemTree instance """
         
         return (self.treeFont, self.treeFontSize, self.iconIndex)
+
     
     #--------------------------------------------------------------------------
+    def change1(self):
+        self.iconIndex = self.iconIndexbox.value()
 
+
+        return
+    #--------------------------------------------------------------------------
+    def change2(self):
+        self.treefont = self.treeFontbox.value()
+        
+        return
+
+    #--------------------------------------------------------------------------
+    def change3(self):
+        self.treeFontSize = self.treeFontSizebox.value()
+
+        return
+    
     def on_ok(self):
         """Handler for ''OK'' button"""
                     
         print("OK button pushed!")
-        self.treeFontSize = 24	# test to see if changed value can be returned
+        self.iconIndex = iconIndexbox.value()
+        self.treeFontSize = treeFontSizebox.value()	# test to see if changed value can be returned
         
         self.accept()
         
@@ -94,5 +129,14 @@ class SetPreferences (QDialog):
         self.reject()
         
         return
+
+
+if __name__=="__main__":#test
+    app = QApplication(sys.argv)
+    ex = Setpreference()
+    sys.exit(app.exec_())
     
     #--------------------------------------------------------------------------
+
+
+    

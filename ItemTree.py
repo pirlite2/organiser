@@ -159,34 +159,50 @@ class ItemTree (QTreeWidget):
         @author: Sam Maher
         """
         myStack = []
-        # Create Parent
-        if indentLevel == 0:
+
+        # Create initial branch
+        if (self.topLevelItemCount() == 0):
             newTaskItem = TaskItem(self)
             newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
             newTaskItem.setText(0, title)
             newTaskItem.note = QTextDocument()
             newTaskItem.deadline = deadline        
             newTaskItem.setExpanded(expanded)
-            myStack.append(newTaskItem)
+            myStack.append(newTaskItem)            
         else:
-            # Create Successor
-            if indentLevel == myStack.pop().indentLevel:
-                newTaskItem = TaskItem(myStack.pop().parent)
+
+        # Create Parent
+            if indentLevel == 0:
+                index = self.indexOfTopLevelItem(self)
+                newTaskItem = TaskItem(self)
+                self.insertTopLevelItem(index + 1, newTaskItem)
                 newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
                 newTaskItem.setText(0, title)
                 newTaskItem.note = QTextDocument()
                 newTaskItem.deadline = deadline        
                 newTaskItem.setExpanded(expanded)
                 myStack.append(newTaskItem)
-            # Create child
             else:
-                newTaskItem = TaskItem(myStack.pop())
-                newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
-                newTaskItem.setText(0, title)
-                newTaskItem.note = QTextDocument()
-                newTaskItem.deadline = deadline        
-                newTaskItem.setExpanded(expanded)
-                myStack.append(newTaskItem)
+
+                # Create Successor
+                if indentLevel == myStack.pop().indentLevel:
+                    newTaskItem = TaskItem(myStack.pop().parent)
+                    newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
+                    newTaskItem.setText(0, title)
+                    newTaskItem.note = QTextDocument()
+                    newTaskItem.deadline = deadline        
+                    newTaskItem.setExpanded(expanded)
+                    myStack.append(newTaskItem)
+
+                # Create child
+                else:
+                    newTaskItem = TaskItem(myStack.pop())
+                    newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
+                    newTaskItem.setText(0, title)
+                    newTaskItem.note = QTextDocument()
+                    newTaskItem.deadline = deadline        
+                    newTaskItem.setExpanded(expanded)
+                    myStack.append(newTaskItem)
         
         return
 

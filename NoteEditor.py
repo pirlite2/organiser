@@ -1,7 +1,7 @@
 from PySide2.QtWidgets import QToolBar, QTextEdit, QAction, QFontComboBox, QComboBox, QWidget, QVBoxLayout
 from PySide2.QtGui import QFont, QTextDocument, QKeySequence, QIcon, QColor
 from PySide2.QtCore import QSize
-from EditBox import EditBox
+#from EditBox import EditBox
 
 import os
 import json

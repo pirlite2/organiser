@@ -157,7 +157,7 @@ class MainWindow(QMainWindow):
         """
         Handler for "Delete" action
         :version:
-        :author: ??? 
+        :author: pir & Hong Zhou
         """
 
         self.itemTree.delete_task_item()
@@ -273,7 +273,7 @@ class MainWindow(QMainWindow):
         """
         
         :version:
-        :author: ???
+        :author: Hong Zhou
         """
 
         if self.filePath == "" :
@@ -364,7 +364,7 @@ Spell checker: Andrei Georgescu
         """
         Handler for 'quit' menu action
         :version:
-        :author: pir, Hong Zhou
+        :author: pir & Hong Zhou
         """
 
         # Check whether data needs to be auto-saved on exit

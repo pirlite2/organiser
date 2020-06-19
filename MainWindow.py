@@ -283,18 +283,3 @@ if __name__ == "__main__":
     exit(application.exec_())   # Not sure why this still has to be `exec_` with a trailing underscore?
 
 #******************************************************************************
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

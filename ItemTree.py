@@ -69,7 +69,6 @@ class ItemTree (QTreeWidget):
     #--------------------------------------------------------------------------
 
     def insert_task_item(self, expanded, child):
-    #def insert_task_item(self, iconIndex, title, deadline, expanded, child):
 
         """
         Insert a new task item into the task tree with the supplied properties:

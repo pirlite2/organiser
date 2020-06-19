@@ -19,9 +19,9 @@
 
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QTextDocument, QTextCursor, QTextCharFormat, QColor
-from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QToolBar, QTextEdit, QVBoxLayout
+from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QToolBar, QTextEdit, QVBoxLayout,QAction
 
-#import enchant
+import enchant
 
 #******************************************************************************
 
@@ -59,14 +59,14 @@ class NoteEditor(QWidget):
         return
 
     #--------------------------------------------------------------------------
-
+    
     def spell_check(self, document):
         """
         Spell check document
         :version:
-        :author: pir & ???
+        :author: pir & Andrei
         """
-
+        d = enchant.Dict("en_GB")
         documentText = document.toPlainText()
         wordList = documentText.split()
 
@@ -74,24 +74,45 @@ class NoteEditor(QWidget):
         for i in range(0, len(wordList)):
             print(wordList[i])
         #test
-
+        #self.setContextMenuPolicy(Qt.ActionsContextMenu)
         # find misspelled word & correct it
-        wrongSpelling = "folls"
-        correctSpelling = "falls"
-        currentTextCursor = QTextCursor(document)
-        textCursor = document.find(wrongSpelling, currentTextCursor, QTextDocument.FindCaseSensitively or QTextDocument.FindWholeWords)
-        print("selected word = ", textCursor.selectedText())
+        #def swap(self):
+         #   textCursor.insertText(correctSpelling, noUnderlineFormat)
+        for s in range(0,len(wordList)):
+            if d.check(wordList[s]) is False: #if word is incorrect
+                wrongSpelling = wordList[s]
+                correctSpelling = d.suggest(wordList[s])
+                print("\nMisspelled word is  %s" % wrongSpelling)
+                print("%s" % correctSpelling)
 
-        underlineFormat = QTextCharFormat()
-        underlineFormat.setUnderlineColor(QColor(255, 0, 0))
-        underlineFormat.setUnderlineStyle(QTextCharFormat.SpellCheckUnderline)
-        textCursor.setCharFormat(underlineFormat)
+                for t in range(0,len(correctSpelling)):
+                    print("Choice number",t ,"is" ,correctSpelling[t])
+                   # replace = QAction("Replace with %s" % correctSpelling[t], self)
+                   # replace.triggered.connect(swap)
+                   # self.addAction(replace)
+                    
+                    currentTextCursor = QTextCursor(document)
+                    textCursor = document.find(wrongSpelling, currentTextCursor, QTextDocument.FindCaseSensitively or QTextDocument.FindWholeWords)
 
-        noUnderlineFormat = QTextCharFormat()
-        noUnderlineFormat.setUnderlineStyle(QTextCharFormat.NoUnderline)
-        #textCursor.insertText(correctSpelling, noUnderlineFormat) # Uncoment to correct mispelled word & remove wiggly red underline
+                    underlineFormat = QTextCharFormat()
+                    underlineFormat.setUnderlineColor(QColor(255, 0, 0))
+                    underlineFormat.setUnderlineStyle(QTextCharFormat.SpellCheckUnderline)
+                    textCursor.setCharFormat(underlineFormat)
+
+                    noUnderlineFormat = QTextCharFormat()
+                    noUnderlineFormat.setUnderlineStyle(QTextCharFormat.NoUnderline)
+                    #textCursor.insertText(correctSpelling, noUnderlineFormat) # Uncoment to correct mispelled word & remove wiggly red underline
+                
+        
+                
+                
+
 
         return
+
+
+       
+        
 
 #******************************************************************************
 
@@ -104,7 +125,7 @@ if __name__ == "__main__":
     mainWindow.setCentralWidget(noteEditor)
     mainWindow.show()
 
-    document = QTextDocument("the rain in Spaun folls maily on the plaine\n\n hello world")
+    document = QTextDocument("I alerady fuond the solution btu it’s good to hvae more than")
     noteEditor.setNoteDocument(document)
     noteEditor.spell_check(document)
 

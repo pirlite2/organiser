@@ -156,9 +156,10 @@ class ItemTree (QTreeWidget):
         indentLevel: 0 = top-level item
 
         @return: None
-        @author: pir, 
+        @author: pir, Sam Maher
         """
-        
+        myStack = []
+
         if self.topLevelItemCount() == 0:
             # Add first top level item
             assert indentLevel == 0, "First task must be at indent level 0"
@@ -168,8 +169,41 @@ class ItemTree (QTreeWidget):
             newTaskItem.note = QTextDocument(note)
             newTaskItem.deadline = deadline        
             newTaskItem.setExpanded(expanded)
+            myStack.append(newTaskItem)
+        else:
 
+            # Create Parent
+            if indentLevel == 0:
+                newTaskItem = TaskItem(self)
+                newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
+                newTaskItem.setText(0, title)
+                newTaskItem.note = QTextDocument()
+                newTaskItem.deadline = deadline        
+                newTaskItem.setExpanded(expanded)
+                myStack.append(newTaskItem)
+            else:
+                # Create Successor
+                if indentLevel == myStack.pop().indentLevel:
+                    newTaskItem = TaskItem(myStack.pop().parent)
+                    newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
+                    newTaskItem.setText(0, title)
+                    newTaskItem.note = QTextDocument()
+                    newTaskItem.deadline = deadline        
+                    newTaskItem.setExpanded(expanded)
+                    myStack.append(newTaskItem)
+                # Create child
+                else:
+                    newTaskItem = TaskItem(myStack.pop())
+                    newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
+                    newTaskItem.setText(0, title)
+                    newTaskItem.note = QTextDocument()
+                    newTaskItem.deadline = deadline        
+                    newTaskItem.setExpanded(expanded)
+                    myStack.append(newTaskItem)
+        
         return
+
+        
 
     #--------------------------------------------------------------------------
 

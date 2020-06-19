@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+
 
 #******************************************************************************
 #  This program is free software; you can redistribute it and/or modify

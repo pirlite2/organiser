@@ -46,8 +46,6 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Organiser")
         self.mainLayout = QVBoxLayout()
 
-        self.cwd = os.getcwd()  # Get the location of the current program file
-
         # Create menu bar & menus
         self.fileMenu = self.menuBar().addMenu("&File")
         self.openMenuAction = self.fileMenu.addAction("&Open")
@@ -56,8 +54,6 @@ class MainWindow(QMainWindow):
         self.saveMenuAction.triggered.connect(self.on_save_action)
         self.saveAsMenuAction = self.fileMenu.addAction("&Save as")
         self.saveAsMenuAction.triggered.connect(self.on_save_as_action)
-        self.fileMenu.addSeparator()
-        self.fileMenu.addSeparator()  
         self.fileMenu.addSeparator()
         self.quitMenuAction = self.fileMenu.addAction("&Quit")
         self.quitMenuAction.triggered.connect(self.on_quit_action)
@@ -74,7 +70,7 @@ class MainWindow(QMainWindow):
         self.showScheduleOnStartupAction = self.optionsMenu.addAction("Show schedule on startup")
         self.showScheduleOnStartupAction.setCheckable(True)
 
-        self.setPreferencesMenuAction = self.optionsMenu.addAction("Set Preferences")
+        self.setPreferencesMenuAction = self.optionsMenu.addAction("Set preferences")
         self.setPreferencesMenuAction.triggered.connect(self.on_set_preferences_action)  
 
         self.aboutMenu = self.menuBar().addMenu("&About")
@@ -117,9 +113,10 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.mainWidget)
 
         # Parameters
+        self.cwd = os.getcwd()  # Get the location of the current program file
         self.filePath = ""
         self.currentDirectory = str(Path.home())
-        self.dirtyBit = False  # Indicates whether tree has been modified
+        self.treeModified = False  # Indicates whether tree has been modified
         
         return
         
@@ -135,7 +132,7 @@ class MainWindow(QMainWindow):
         isExpanded = True
         isChild = False
         self.itemTree.insert_task_item(isExpanded, isChild)
-        self.dirtyBit = True
+        self.treeModified = True
 
         return
         
@@ -151,7 +148,7 @@ class MainWindow(QMainWindow):
         isExpanded = True
         isChild = True
         self.itemTree.insert_task_item(isExpanded, isChild)
-        self.dirtyBit = True
+        self.treeModified = True
 
         return
         
@@ -169,7 +166,7 @@ class MainWindow(QMainWindow):
 
 
         self.itemTree.delete_task_item()
-        self.dirtyBit = True
+        self.treeModified = True
 
         return
 
@@ -183,7 +180,7 @@ class MainWindow(QMainWindow):
         """
 
         self.itemTree.edit_task_item()
-        self.dirtyBit = True
+        self.treeModified = True
 
         return
 
@@ -207,7 +204,7 @@ class MainWindow(QMainWindow):
         #f.close()
         # test 
 
-        self.dirtyBit = False     
+        self.treeModified = False     
 
         return
 
@@ -222,7 +219,7 @@ class MainWindow(QMainWindow):
         # Write XML file
 
         
-        self.dirtyBit = False
+        self.treeModified = False
 
         return
 
@@ -330,7 +327,7 @@ class MainWindow(QMainWindow):
         """
 
         # Check whether data needs to be auto-saved on exit
-        if self.dirtyBit:
+        if self.treeModified:
             self.save_file(self.filePath)
 
         print("quitting application")

@@ -17,8 +17,8 @@
 
 import os
 
-from PySide2.QtGui import QIcon, QFont, QTextDocument
-from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog
+from PySide2.QtGui import QIcon, QFont, QTextDocument, QColor
+from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog, QInputDialog, QTreeWidgetItem, QMessageBox
 
 from TaskItem import TaskItem
 from NoteEditor import NoteEditor
@@ -69,13 +69,9 @@ class ItemTree (QTreeWidget):
     #--------------------------------------------------------------------------
 
     def insert_task_item(self, expanded, child):
-
         """
         Insert a new task item into the task tree with the supplied properties:
         
-        iconIndex : index into treeIconsList specifying icon to be used for the node
-        title: string of text used in tree
-        deadline: int in ISO-8601 format of: YYYYMMDDHHMM
         expanded : True|False depending whether the node is to be expanded ot not
         child : True|False, depending on whether the task to be added is a child or not
 
@@ -87,20 +83,17 @@ class ItemTree (QTreeWidget):
         title = ""
         deadline = 0
         editTaskDialog = EditTaskItem(self.defaultIconIndex, title, deadline, self.treeIconsList)
-        if (editTaskDialog.exec_() == QDialog.Accepted):
-            print("accepted")
+        if editTaskDialog.exec_() == QDialog.Accepted:
             (iconIndex, title, deadline) = editTaskDialog.get_item_values()
         else:
-            print("rejected")
             return
 
-        if (self.topLevelItemCount() == 0):
+        if self.topLevelItemCount() == 0:
             newTaskItem = TaskItem(self)
             self.setCurrentItem(newTaskItem, 0)
         else:
             currentItem = self.currentItem()
-            #print(self.currentItem().text(0))   #test
-            if (child == True):
+            if child == True:
                 # Create child item
                 newTaskItem = TaskItem(currentItem)
             else:
@@ -153,19 +146,28 @@ class ItemTree (QTreeWidget):
 
     def add_task_item(self, iconIndex, title, note, deadline, expanded, indentLevel):
         """
-        
+        Add tree items programmatically
+                
+        iconIndex : index into treeIconsList specifying icon to be used for the node
+        title: string of text used in tree
+        note: string to instanatiate note
+        deadline: int in ISO-8601 format of: YYYYMMDDHHMM
+        expanded : True|False depending whether the node is to be expanded ot not
         indentLevel: 0 = top-level item
+
         @return: None
-        @author:
+        @author: pir, 
         """
         
-        # Add top level item
-        newTaskItem = TaskItem(self)
-        newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
-        newTaskItem.setText(0, title)
-        newTaskItem.note = QTextDocument()
-        newTaskItem.deadline = deadline        
-        newTaskItem.setExpanded(expanded)
+        if self.topLevelItemCount() == 0:
+            # Add first top level item
+            assert indentLevel == 0, "First task must be at indent level 0"
+            newTaskItem = TaskItem(self)
+            newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
+            newTaskItem.setText(0, title)
+            newTaskItem.note = QTextDocument(note)
+            newTaskItem.deadline = deadline        
+            newTaskItem.setExpanded(expanded)
 
         return
 
@@ -173,19 +175,18 @@ class ItemTree (QTreeWidget):
 
     def edit_task_item(self):
         """
-        Edit the current selected task item
+        Edit the currently-selected task item
         @return:
         @author: Sam Maher
         """
+
         targetItem = self.currentItem()
         title = targetItem.text(0)
         deadline = targetItem.deadline
         editTaskDialog = EditTaskItem(self.defaultIconIndex, title, deadline, self.treeIconsList)
-        if (editTaskDialog.exec_() == QDialog.Accepted):
-            #print("edit accepted")
+        if editTaskDialog.exec_() == QDialog.Accepted:
             (iconIndex, title, deadline) = editTaskDialog.get_item_values()
         else:
-            #print("edit rejected")
             return
   
         # Update target item properties
@@ -202,8 +203,43 @@ class ItemTree (QTreeWidget):
         """
         Show the schedules for all items with assigned deadlines; ignore tasks without deadlines
         @return:
-        @author:
+        @author:Tong Wang
         """
+
+        # get all notes with deadlines, put into a list
+        notesList = []
+
+        # go through the tree, collect notes with deadlines
+        def iterateFunc(parent):
+            child_count = parent.childCount()
+            for i in range(child_count):
+                item = parent.child(i)
+
+                if item.nodetype == 'note' and item.deadline != 'none':
+                    notesList.append(item)
+
+                # if node type is folder，recursively call sub-items
+                if item.nodetype == 'folder':
+                    iterateFunc(item)
+
+        root = self.invisibleRootItem()
+        iterateFunc(root)
+
+        # show actual schedule
+        def bubbleSort(arr):
+            length = len(arr)
+
+            for j in range(length - 1, 0, -1):
+                for i in range(0, length - 1):
+                    if arr[i].deadline > arr[i + 1].deadline:
+                        arr[i], arr[i + 1] = arr[i + 1], arr[i]
+
+            return arr
+
+        bubbleSort(notesList)
+        #infoList = [f'   {item.deadline} {item.title}           ' for item in notesList]   # THIS LINE BREAKS THE CODE!!!!
+
+        QMessageBox.information(self, 'Task Schedule', '\n'.join(infoList))
 
         return
     
@@ -212,9 +248,27 @@ class ItemTree (QTreeWidget):
     def search_tree(self):
         """  
         Search tree for specified text in title
-        @return:
-        @author:
+        @return: None
+        @author:Tong Wang
         """
+
+        def searchFunc(parent):
+            "Recursively calls the function to complete the search filtering of the entire tree"
+            child_count = parent.childCount()
+            for i in range(child_count):
+                item = parent.child(i)
+                if keywords in item.text(0):
+                    item.setBackgroundColor(0, QColor('#c9e9e3'))
+                else:
+                    item.setBackgroundColor(0, QColor('white'))
+
+                if item.nodetype == 'folder':
+                    searchFunc(item)
+
+        if keywords == '':
+            keywords = '$%#$%@#$@#$@#$!!!$' # Make an impossible string in reality to make a mismatch
+        root = self.invisibleRootItem()
+        searchFunc(root)
 
         return
     
@@ -224,8 +278,49 @@ class ItemTree (QTreeWidget):
         """
         Search notes for specified text
         @return:
-        @author:
+        @author:Tong Wang
         """
+
+        te = self.ui.textEdit
+
+        cursor = te.textCursor()
+
+        # clear format
+        cursor.select(QtGui.QTextCursor.Document)
+        cursor.setCharFormat(QtGui.QTextCharFormat())
+        cursor.clearSelection()
+        te.setTextCursor(cursor)
+
+
+        # Setup the desired format for matches
+        format = QtGui.QTextCharFormat()
+        format.setBackground(QtGui.QBrush(QtGui.QColor("#6ac06e")))
+
+        searchString = self.ui.keywords_2.text()
+        # Empty string, empty selection
+        if searchString == '':
+            # Clear format
+            cursor.select(QtGui.QTextCursor.Document)
+            cursor.setCharFormat(QtGui.QTextCharFormat())
+            cursor.clearSelection()
+            te.setTextCursor(cursor)
+            return
+
+        # Process the displayed document
+        pos = 0
+
+        lenOfs = len(searchString)
+        while True:
+            index = te.toPlainText().find(searchString,pos)
+            if index < 0:
+                break
+
+            cursor.setPosition(index)
+
+            cursor.movePosition(QtGui.QTextCursor.Right, QtGui.QTextCursor.MoveMode.KeepAnchor, lenOfs)
+            cursor.mergeCharFormat(format)
+
+            pos = index + lenOfs
 
         return
 
@@ -233,6 +328,7 @@ class ItemTree (QTreeWidget):
    
     def set_item_tree_preferences(self):
         """
+
         @return: None
         @author: pir
         """

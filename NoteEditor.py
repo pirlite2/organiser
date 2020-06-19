@@ -17,18 +17,28 @@
 #  MA 02110-1301, USA.
 #******************************************************************************
 
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QTextDocument, QTextCursor, QTextCharFormat, QColor
-from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QToolBar, QTextEdit, QVBoxLayout
+import os
+import json
 
-#import enchant
+from PySide2.QtCore import Qt, QSize
+
+from PySide2.QtGui import QTextDocument, QTextCursor, QTextCharFormat, QColor
+from PySide2.QtGui import QFont, QKeySequence, QIcon
+
+from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
+from PySide2.QtWidgets import QComboBox, QFontComboBox, QToolBar, QTextEdit, QAction
+
+#******************************************************************************
+
+fontSizePickers = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72, 84, 96]
+defaultfontSize = 11.0
 
 #******************************************************************************
 
 class NoteEditor(QWidget):
     """
     :version:
-    :author:
+    :author: pir, Joseph-William Szetu
     """
 
     #--------------------------------------------------------------------------
@@ -36,10 +46,82 @@ class NoteEditor(QWidget):
     def __init__(self):
         super().__init__()
 
+        #self.setWindowFlag(0x00000012, True)
+
         widgetLayout = QVBoxLayout()
-        self.editToolbar = QToolBar()
-        widgetLayout.addWidget(self.editToolbar)
+
         self.noteEditBox = QTextEdit()
+        self.noteEditBox.setFontPointSize(defaultfontSize)
+        self.noteEditBox.setFont(QFont('Helvtica', defaultfontSize))
+        self.noteEditBox.textChanged.connect(self.textHasChanged)
+
+        editToolbar = QToolBar()
+        editToolbar.setMovable(False)
+        editToolbar.setIconSize(QSize(18, 18))
+
+        # Buttons
+        # Font Colour Picker
+        self.fontColourPicker = QComboBox()
+        with open(os.path.join('colours', 'colours.json')) as f:
+            self.colours = json.load(f)
+        self.fontColourPicker.addItems(self.colours.keys())
+        #self.fontColourPicker.setStatusTip("Text Colour")
+        self.fontColourPicker.setToolTip("Select font colour")
+        editToolbar.addWidget(self.fontColourPicker)
+        self.fontColourPicker.setCurrentIndex(0)
+        self.fontColourPicker.currentIndexChanged.connect(self.colourPickerChanged)
+
+        # Text Highlight Colour Picker
+        self.textHighlight = QComboBox()
+        self.textHighlight.addItems(self.colours.keys())
+        self.textHighlight.setCurrentIndex(1)
+        #self.textHighlight.setStatusTip("Highlight Colour")
+        self.textHighlight.setToolTip("Highlight Colour")
+        editToolbar.addWidget(self.textHighlight)
+        self.textHighlight.currentIndexChanged.connect(self.textHighlightChanged)
+
+        # Font Family
+        self.fontFamilyPicker = QFontComboBox()
+        self.fontFamilyPicker.setStatusTip("Font")
+        self.fontFamilyPicker.currentFontChanged.connect(self.fontChanged)
+        editToolbar.addWidget(self.fontFamilyPicker)
+
+        # Font Size
+        self.fontSizePicker = QComboBox()
+        self.fontSizePicker.addItems([str(s) for s in fontSizePickers])
+        self.fontSizePicker.setCurrentIndex(fontSizePickers.index(defaultfontSize))
+        self.fontSizePicker.setStatusTip("Font Size")
+        editToolbar.addWidget(self.fontSizePicker)
+        self.fontSizePicker.currentIndexChanged.connect(self.fontSizePickerChanged)
+        editToolbar.addSeparator()
+
+        # Bold
+        self.boldButton = QAction(QIcon("./editToolbarIcons/Gnome-format-text-bold.svg"), "Bold")
+        #self.boldButton.setStatusTip("Bold")
+        self.boldButton.setCheckable(True)
+        self.boldButton.setToolTip("Bold")
+        self.boldButton.toggled.connect(lambda x: self.noteEditBox.setFontWeight(QFont.Bold if x else QFont.Normal))
+        editToolbar.addAction(self.boldButton)
+
+        # Italic
+        self.italicButton = QAction(QIcon("./editToolbarIcons/Gnome-format-text-italic.svg"), "Italic")
+        #self.italicButton = QAction(QIcon(os.path.join('icons', 'italic.svg')), "Italic")
+        self.italicButton.setStatusTip("Italic")
+        self.italicButton.setCheckable(True)
+        self.italicButton.setToolTip("Italic")
+        self.italicButton.toggled.connect(self.noteEditBox.setFontItalic)
+        editToolbar.addAction(self.italicButton)
+
+        # Underline
+        self.underlineButton = QAction(QIcon("./editToolbarIcons/Gnome-format-text-underline.svg"), "Underline")
+        self.underlineButton.setStatusTip("Underline")
+        self.underlineButton.setCheckable(True)
+        self.underlineButton.setToolTip("Underline")
+        self.underlineButton.toggled.connect(self.noteEditBox.setFontUnderline)
+        editToolbar.addAction(self.underlineButton)
+
+        widgetLayout.addWidget(editToolbar)     
+       
         widgetLayout.addWidget(self.noteEditBox)
         self.setLayout(widgetLayout)
               
@@ -55,6 +137,87 @@ class NoteEditor(QWidget):
         """
 
         self.noteEditBox.setDocument(document)
+
+        return
+
+    #---------------------------------------------------------------------------
+    
+    def textHasChanged(self):
+        """
+        Interface to spellchecker???
+        :version:
+        :author: js
+        """
+
+        plainText = self.noteEditBox.toPlainText()
+
+        if(plainText[-1] == ' ' or plainText[-1] == '\n'):
+            print("Text changed...>>> " + self.noteEditBox.toPlainText())
+            """ INSERT HERE CALL TO SPELL CHECK MODULE I.E
+                self.editBox.spell_check(plainText)
+            """
+        return
+
+    #---------------------------------------------------------------------------
+
+    def fontChanged(self):
+        """
+
+        :version:
+        :author: js
+        """
+
+        font = self.fontFamilyPicker.currentFont()
+        self.noteEditBox.setCurrentFont(font)
+        self.fontSizePickerChanged()
+        print("font changed")
+        return
+    
+    #---------------------------------------------------------------------------
+    
+    def fontSizePickerChanged(self):
+        """
+
+        :version:
+        :author: js
+        """
+
+        fontSize = self.fontSizePicker.currentText()
+        self.noteEditBox.setFontPointSize(float(fontSize))
+        self.fontSizePicker.setCurrentText(fontSize)
+        print("font size changed")
+
+        return
+
+    #---------------------------------------------------------------------------
+    
+    def colourPickerChanged(self):
+        """
+
+        :version:
+        :author: js
+        """
+
+        currentColour = self.fontColourPicker.currentText()
+        print("font colour changed")
+        (r,g,b) = self.colours[currentColour]['rgb']
+        self.noteEditBox.setTextColor(QColor(r,g,b))
+
+        return
+
+    #---------------------------------------------------------------------------
+    
+    def textHighlightChanged(self):
+        """
+
+        :version:
+        :author: js
+        """
+
+        currentColour = self.textHighlight.currentText()
+        print("text background colour changed")
+        r,g,b = self.colours[currentColour]['rgb']
+        self.noteEditBox.setTextBackgroundColor(QColor(r,g,b))
 
         return
 
@@ -115,89 +278,3 @@ if __name__ == "__main__":
 
 #******************************************************************************
 
-# Old code... some might be salvaged and reused?
-
-
-# d = enchant.Dict("en_GB")
-# suggest = EditBox.Spellcheck(word) ##suggesting corrections
-# if d.check(word) is False: #if word is incorrect run spellcheker application
-#     print(d.suggest(word)) #print suggestion list
-#     myApp1 = QApplication(sys.argv) #running spellcheker loop
-#     window = EdiBox.SpellCheckWindow()
-#     window.show() #showing the window
-#     time.sleep(3) #resize the window to parameters after 3 seconds
-#     window.resize(600,400)
-#     myApp1.exec_()
-
-
-# d = enchant.Dict("en_GB") # selecting UK English dictionary
-# def Spellcheck(word):
-#     suggest = d.suggest(word) #suggesting corrections
-#     listsize = len(suggest) #finding suggestion list size
-#     print("List size is %i" % listsize) #printing suggestion list size
-#     return suggest
-
-# word = EditBox()
-# suggest = Spellcheck(word)
-
-# class SpellCheckWindow(QWidget):        
-#     def __init__(self):
-#         QWidget.__init__(self)
-#         self.setWindowTitle("Spellchecking Error") #setting title
-#         self.setGeometry(300,300, 500,400) #setting window parameters
-#         self.setMinimumHeight(100)
-#         self.setMinimumWidth(250)
-#         self.setMaximumHeight(200)
-#         self.setMaximumWidth(800)
-
-#         self.text = QLabel("%s seems to be spelled inccorectly, please choose an option:" % word) #text
-#         self.suggestion1 = QPushButton("%s" % suggest[0]) #adding text to buttons
-#         self.suggestion2 = QPushButton("%s" % suggest[1]) 
-#         self.suggestion3 = QPushButton("%s" % suggest[2]) 
-#         self.suggestion4 = QPushButton("Ignore")
-#         self.suggestion5 = QPushButton("Add word to dictionary")
-
-#         self.layout =  QVBoxLayout()
-#         self.setLayout(self.layout)
-#         self.layout.addWidget(self.text)
-#         self.layout.addWidget(self.suggestion1) #adding buttons to window
-#         self.layout.addWidget(self.suggestion2)
-#         self.layout.addWidget(self.suggestion3)
-#         self.layout.addWidget(self.suggestion4)
-#         self.layout.addWidget(self.suggestion5)
-
-#         self.suggestion1.clicked.connect(self.swap_word1) #adding functionality to buttons
-#         self.suggestion2.clicked.connect(self.swap_word2)
-#         self.suggestion3.clicked.connect(self.swap_word3)
-#         self.suggestion4.clicked.connect(self.ignore)
-#         self.suggestion5.clicked.connect(self.addword)
-
-#     def swap_word1(self): #swaping functionality
-#         word = suggest[0]
-#         print("Word is now %s" % word) #print the swap result
-#         sys.exit(0)
-#     def swap_word2(self): 
-#         word = suggest[1] #swaping functionality
-#         print("Word is now %s" % word)
-#         sys.exit(0)
-#     def swap_word3(self): #swaping functionality
-#         word = suggest[2]
-#         print("Word is now %s" % word)
-#         sys.exit(0)
-#     def ignore(self): #ignoring the spellcheker suggestion
-#         d.remove(word)
-#         print("Word is ignored") #print the ignore result
-#         sys.exit(0) 
-#     def addword(self): #adding word to user dictionary
-#         d.add(word)
-#         print("Word added to dictionary") #print the add to dictionary result
-#         sys.exit(0)
-
-# if d.check(word) is False: #if word is incorrect run spellcheker application
-#     print(d.suggest(word)) #print suggestion list
-#     myApp = QApplication(sys.argv) #running spellcheker loop
-#     window = SpellCheckWindow()
-#     window.show() #showing the window
-#     time.sleep(3) #resize the window to parameters after 3 seconds
-#     window.resize(600,400)
-#     myApp.exec_()

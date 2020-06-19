@@ -1,12 +1,13 @@
 from PySide2.QtWidgets import QToolBar, QTextEdit, QAction, QFontComboBox, QComboBox, QWidget, QVBoxLayout
 from PySide2.QtGui import QFont, QTextDocument, QKeySequence, QIcon, QColor
 from PySide2.QtCore import QSize
+from EditBox import EditBox
 
 import os
 import json
 
 fontSizePickers = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72, 84, 96, 110, 130]
-defaultfontSize = 22.0
+defaultfontSize = 18.0
 
 
 class NoteEditor (QWidget):
@@ -103,14 +104,27 @@ class NoteEditor (QWidget):
         return(mainToolBar)
 #---------------------------------------------------------------------------    
     def createEditBox(self):
-        editBox = QTextEdit()
+
+        editBox = EditBox()
         editBox.setFontPointSize(defaultfontSize)
-        editBox.setFontPointSize(defaultfontSize)
+        editBox.setFont(QFont('Times', defaultfontSize))
         editBox.setPlaceholderText("New Note.....")
+        editBox.textChanged.connect(self.textHasChanged)
 
         return(editBox)
 #---------------------------------------------------------------------------
+    def textHasChanged(self):
+        plainText = self.editBox.toPlainText()
+
+        if(plainText[-1] == ' ' or plainText[-1] == '\n'):
+            print("Text changed...>>> " + self.editBox.toPlainText())
+            """ INSERT HERE CALL TO SPELL CHECK MODULE I.E
+                self.editBox.spell_check(plainText)
+            """
+        return
+#---------------------------------------------------------------------------
     def fontChanged(self):
+
         font = self.fontFamilyPicker.currentFont()
         self.editBox.setCurrentFont(font)
         self.fontSizePickerChanged()

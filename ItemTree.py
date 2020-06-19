@@ -17,7 +17,7 @@
 
 import os
 
-from PySide2.QtGui import QIcon, QFont, QTextDocument, Qcolor
+from PySide2.QtGui import QIcon, QFont, QTextDocument, QColor
 from PySide2.QtWidgets import QTreeWidget, QAbstractItemView, QDialog, QInputDialog, QTreeWidgetItem, QMessageBox
 
 from TaskItem import TaskItem
@@ -70,7 +70,6 @@ class ItemTree (QTreeWidget):
 
     def insert_task_item(self, expanded, child):
     #def insert_task_item(self, iconIndex, title, deadline, expanded, child):
-
         """
         Insert a new task item into the task tree with the supplied properties:
         
@@ -174,19 +173,18 @@ class ItemTree (QTreeWidget):
 
     def edit_task_item(self):
         """
-        Edit the current selected task item
+        Edit the currently-selected task item
         @return:
         @author: Sam Maher
         """
+
         targetItem = self.currentItem()
         title = targetItem.text(0)
         deadline = targetItem.deadline
         editTaskDialog = EditTaskItem(self.defaultIconIndex, title, deadline, self.treeIconsList)
-        if (editTaskDialog.exec_() == QDialog.Accepted):
-            #print("edit accepted")
+        if editTaskDialog.exec_() == QDialog.Accepted:
             (iconIndex, title, deadline) = editTaskDialog.get_item_values()
         else:
-            #print("edit rejected")
             return
   
         # Update target item properties
@@ -205,20 +203,20 @@ class ItemTree (QTreeWidget):
         @return:
         @author:Tong Wang
         """
+
         # get all notes with deadlines, put into a list
         notesList = []
 
-        # go through the tree, collect  notes with deadlines
+        # go through the tree, collect notes with deadlines
         def iterateFunc(parent):
             child_count = parent.childCount()
             for i in range(child_count):
                 item = parent.child(i)
 
                 if item.nodetype == 'note' and item.deadline != 'none':
-
                     notesList.append(item)
 
-                # if node type is folder，recursive call all the item
+                # if node type is folder，recursively call sub-items
                 if item.nodetype == 'folder':
                     iterateFunc(item)
 
@@ -237,12 +235,10 @@ class ItemTree (QTreeWidget):
             return arr
 
         bubbleSort(notesList)
-        infoList = [f'   {item.deadline} {item.title}           ' for item in notesList]
+        #infoList = [f'   {item.deadline} {item.title}           ' for item in notesList]   # THIS LINE BREAKS THE CODE!!!!
 
-        QMessageBox.information(
-            self,
-            'Task Schedule',
-            '\n'.join(infoList))
+        QMessageBox.information(self, 'Task Schedule', '\n'.join(infoList))
+
         return
     
     #--------------------------------------------------------------------------
@@ -250,11 +246,12 @@ class ItemTree (QTreeWidget):
     def search_tree(self):
         """  
         Search tree for specified text in title
-        @return:None
+        @return: None
         @author:Tong Wang
         """
-        # recursive function, Recursively calls the function to complete the search filtering of the entire tree
+
         def searchFunc(parent):
+            "Recursively calls the function to complete the search filtering of the entire tree"
             child_count = parent.childCount()
             for i in range(child_count):
                 item = parent.child(i)
@@ -281,6 +278,7 @@ class ItemTree (QTreeWidget):
         @return:
         @author:Tong Wang
         """
+
         te = self.ui.textEdit
 
         cursor = te.textCursor()
@@ -317,10 +315,7 @@ class ItemTree (QTreeWidget):
 
             cursor.setPosition(index)
 
-            cursor.movePosition(
-                QtGui.QTextCursor.Right,
-                QtGui.QTextCursor.MoveMode.KeepAnchor,
-                lenOfs)
+            cursor.movePosition(QtGui.QTextCursor.Right, QtGui.QTextCursor.MoveMode.KeepAnchor, lenOfs)
             cursor.mergeCharFormat(format)
 
             pos = index + lenOfs
@@ -331,6 +326,7 @@ class ItemTree (QTreeWidget):
    
     def set_item_tree_preferences(self):
         """
+
         @return: None
         @author: pir
         """

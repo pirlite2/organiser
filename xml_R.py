@@ -7,6 +7,7 @@ class readHandler(xml.sax.ContentHandler):
         self.title = ""
         self.note = ""
         self.deadline = ""
+        self.n=0
         
     def startElement( self, type, attributes):
         self.CurrentData =  type
@@ -15,6 +16,8 @@ class readHandler(xml.sax.ContentHandler):
         if type=="task":
             Icon = attributes["icon"]
             print ('--- Task ---')
+            #self.n is defining the nesting(depth)
+            self.n=self.n+1
             print('Icon:',Icon)
             Expanded = attributes["expanded"]
             if Expanded=="true":
@@ -31,6 +34,7 @@ class readHandler(xml.sax.ContentHandler):
             print ('Deadline:',self.deadline)
         if  type == "task":
             print ('---endtask---')
+            self.n=self.n-1
         self.CurrentData = ""
 
     def characters(self, content):
@@ -40,3 +44,4 @@ class readHandler(xml.sax.ContentHandler):
             self.note = content
         elif self.CurrentData == "deadline":
             self.deadline = content
+

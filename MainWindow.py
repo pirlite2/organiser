@@ -226,7 +226,13 @@ class MainWindow(QMainWindow):
 
         # Write XML file
         # TODO 
-
+        tree =ET.Element('Tree')
+        parent = self.invisibleRootItem()
+        target[0]=parent
+        roll_whole_tree(parent)
+        myfile = open(filePath, "w+")
+        mynode =  correctform(tree)
+        myfile.write( mynode )
         
         self.dirtyBit = False
 

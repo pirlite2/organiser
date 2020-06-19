@@ -41,6 +41,9 @@ class NoteEditor(QWidget):
         widgetLayout.addWidget(self.editToolbar)
         self.noteEditBox = QTextEdit()
         widgetLayout.addWidget(self.noteEditBox)
+        self.list = QListView()
+        self.model = QStandardItemModel()
+        widgetLayout.addWidget(self.list)
         self.setLayout(widgetLayout)
               
         return
@@ -74,24 +77,24 @@ class NoteEditor(QWidget):
         for i in range(0, len(wordList)):
             print(wordList[i]) #printing the list of words from the sentance
         #test
-  
+        
+       
+        
+
         for s in range(0,len(wordList)):
             if d.check(wordList[s]) is False: #if the word is misspeled find suggestions and highlight with a red underline
                 wrongSpelling = wordList[s] # store the misspeled word
                 correctSpelling = d.suggest(wordList[s]) # suggest correct spelling
                 print("\nMisspelled word is  %s" % wrongSpelling) # print the misspled word
                 print("%s" % correctSpelling) # print list of suggestions
-    #            list = QListView()
-    #            model = QStandardItemModel(list)
-     
-                #for correctSpelling in correctSpelling:
-                #   item = QStandardItem(correctSpelling)
-                #   model.appendRow(item)
-                #   list.setModel(model)
-                #list.show()
+
                 for t in range(0,len(correctSpelling)):
                     print("Choice number",t ,"is" ,correctSpelling[t])
-                
+                    
+                    self.item = QStandardItem(correctSpelling[t])
+                    self.model.appendRow(self.item)
+                    
+
                     currentTextCursor = QTextCursor(document) #setting the cursor 
                     textCursor = document.find(wrongSpelling, currentTextCursor, QTextDocument.FindCaseSensitively or QTextDocument.FindWholeWords) #finding the misspelled word
 
@@ -102,12 +105,13 @@ class NoteEditor(QWidget):
 
                     noUnderlineFormat = QTextCharFormat()
                     noUnderlineFormat.setUnderlineStyle(QTextCharFormat.NoUnderline) # settings for removing the underline
-                   #textCursor.insertText(correctSpelling[t], noUnderlineFormat) # Uncoment to correct mispelled word & remove wiggly red underline
+                    #textCursor.insertText(correctSpelling[t], noUnderlineFormat) # Uncoment to correct mispelled word & remove wiggly red underline
+                    self.list.clicked.connect(self.list_choice)
+        self.list.setModel(self.model)
       
         return
-
-
-       
+    def list_choice(self):
+        self.textCursor.insertText(self.item, noUnderlineFormat) #not working
         
 
 #******************************************************************************

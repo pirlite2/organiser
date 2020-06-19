@@ -24,7 +24,6 @@ class NoteEditor (QWidget):
         self.toolbar = self.createToolbar()
 
         #initial text settings 
-        
 
         #set up layout
         self.layout.addWidget(self.editBox)
@@ -34,6 +33,7 @@ class NoteEditor (QWidget):
 #---------------------------------------------------------------------------
     def setDocument(self, document):
         self.editBox.setDocument(document)
+        self.document = document
         return
 #---------------------------------------------------------------------------
     def createToolbar(self):
@@ -113,13 +113,14 @@ class NoteEditor (QWidget):
         return(editBox)
 #---------------------------------------------------------------------------
     def textHasChanged(self):
-        plainText = self.editBox.toPlainText()
 
-        if(plainText[-1] == ' '):
-            print("Text changed...>>> " + self.editBox.toPlainText())
-            """ INSERT HERE CALL TO SPELL CHECK MODULE I.E
-                self.editBox.spell_check(plainText)
-            """
+        plainText = self.editBox.toPlainText()
+        if(len(plainText) >= 1 ):
+            if(plainText[-1] == ' '):
+                """ INSERT HERE CALL TO SPELL CHECK MODULE I.E
+                    self.editBox.spell_check(self.document)
+                """
+
         return
 #---------------------------------------------------------------------------
     def fontChanged(self):
@@ -127,7 +128,6 @@ class NoteEditor (QWidget):
         font = self.fontFamilyPicker.currentFont()
         self.editBox.setCurrentFont(font)
         self.fontSizePickerChanged()
-        print("font changed")
         return
 #---------------------------------------------------------------------------
     def fontSizePickerChanged(self):
@@ -135,14 +135,12 @@ class NoteEditor (QWidget):
         fontSize = self.fontSizePicker.currentText()
         self.editBox.setFontPointSize(float(fontSize))
         self.fontSizePicker.setCurrentText(fontSize)
-        print("font size changed")
 
         return
 #---------------------------------------------------------------------------
     def colourPickerChanged(self):
 
         currentColour = self.fontColourPicker.currentText()
-        print("font colour changed")
         r,g,b = self.colours[currentColour]['rgb']
         self.editBox.setTextColor(QColor(r,g,b))
 
@@ -151,7 +149,6 @@ class NoteEditor (QWidget):
     def textHighlightChanged(self):
 
         currentColour = self.textHighlight.currentText()
-        print("text background colour changed")
         r,g,b = self.colours[currentColour]['rgb']
         self.editBox.setTextBackgroundColor(QColor(r,g,b))
 

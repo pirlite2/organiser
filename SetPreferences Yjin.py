@@ -112,8 +112,8 @@ class Setpreference(QDialog):
         """Handler for ''OK'' button"""
                     
         print("OK button pushed!")
-        self.iconIndex = self.iconIndexbox.value()
-        self.treeFontSize = self.treeFontSizebox.value()	# test to see if changed value can be returned
+        self.iconIndex = iconIndexbox.value()
+        self.treeFontSize = treeFontSizebox.value()	# test to see if changed value can be returned
         
         self.accept()
         

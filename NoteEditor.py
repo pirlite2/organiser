@@ -116,7 +116,7 @@ class NoteEditor (QWidget):
     def textHasChanged(self):
         plainText = self.editBox.toPlainText()
 
-        if(plainText[-1] == ' ' or plainText[-1] == '\n'):
+        if(plainText[-1] == ' '):
             print("Text changed...>>> " + self.editBox.toPlainText())
             """ INSERT HERE CALL TO SPELL CHECK MODULE I.E
                 self.editBox.spell_check(plainText)

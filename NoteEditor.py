@@ -91,6 +91,9 @@ class NoteEditor(QWidget):
         noUnderlineFormat.setUnderlineStyle(QTextCharFormat.NoUnderline)
         #textCursor.insertText(correctSpelling, noUnderlineFormat) # Uncoment to correct mispelled word & remove wiggly red underline
 
+        # IMPLEMANTATION NOTES: 
+        # try QTextEdit.cursorForPosition(pos) to get QTextCursor at mouse-right click position. does the cursor contain the underlined (mispelled) word?
+
         return
 
 #******************************************************************************

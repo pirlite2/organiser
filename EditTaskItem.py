@@ -22,7 +22,7 @@ from PySide2.QtWidgets import QVBoxLayout, QHBoxLayout
 from PySide2.QtWidgets import QPushButton, QLineEdit, QDateTimeEdit 
 
 from IconPickerButton import IconPickerButton
-from Iso8601_Support import iso8601_to_tuple, tuple_to_iso8601
+from ISO8601_Support import iso8601_to_tuple, tuple_to_iso8601
 
 #******************************************************************************
 

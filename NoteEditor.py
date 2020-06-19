@@ -94,7 +94,7 @@ class NoteEditor(QWidget):
 
                     noUnderlineFormat = QTextCharFormat()
                     noUnderlineFormat.setUnderlineStyle(QTextCharFormat.NoUnderline) # settings for removing the underline
-                    self.list.itemClicked(self.list_choice) #connection not working
+                    #self.list.itemClicked(self.list_choice) #connection not working
                  
         return
 

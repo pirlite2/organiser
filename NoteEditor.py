@@ -105,7 +105,7 @@ class NoteEditor (QWidget):
 #---------------------------------------------------------------------------    
     def createEditBox(self):
 
-        editBox = EditBox()
+        editBox = QTextEdit()
         editBox.setFontPointSize(defaultfontSize)
         editBox.setFont(QFont('Times', defaultfontSize))
         editBox.setPlaceholderText("New Note.....")

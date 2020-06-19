@@ -1,4 +1,4 @@
-from QTextEdit import *
+from PySide2.QtWidgets import QTextEdit
 
 class EditBox (QTextEdit):
 

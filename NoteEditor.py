@@ -1,53 +1,140 @@
-#! /usr/bin/python3
+from PySide2.QtWidgets import QToolBar, QTextEdit, QAction, QFontComboBox, QComboBox, QWidget, QVBoxLayout
+from PySide2.QtGui import QFont, QTextDocument, QKeySequence, QIcon, QColor
+from PySide2.QtCore import QSize
 
-#******************************************************************************
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#  
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#  
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
-#******************************************************************************
+import os
+import json
 
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QTextDocument, QTextCursor, QTextCharFormat, QColor, QStandardItemModel, QStandardItem
-from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QToolBar, QTextEdit, QVBoxLayout,QListView, QMenu, QListWidget
+fontSizePickers = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72, 84, 96, 110, 130]
+defaultfontSize = 18.0
 
-import enchant
 
-#******************************************************************************
-
-class NoteEditor(QWidget):
+class NoteEditor (QWidget):
     """
-    :version:
-    :author:
+    Container for NoteEditor instances 
+    :version: 1.0
+    :author: js
     """
-
-    #--------------------------------------------------------------------------
-
     def __init__(self):
         super().__init__()
 
-        widgetLayout = QVBoxLayout()
-        self.editToolbar = QToolBar()
-        widgetLayout.addWidget(self.editToolbar)
-        self.noteEditBox = QTextEdit()
-        widgetLayout.addWidget(self.noteEditBox)
-        self.list = QListWidget()
-        widgetLayout.addWidget(self.list)
-        self.setLayout(widgetLayout)
-              
-        return
+        #initialise the widgets needed
+        self.layout = QVBoxLayout()
+        self.editBox = self.createEditBox()
+        self.toolbar = self.createToolbar()
 
-    #--------------------------------------------------------------------------
+        #initial text settings 
+
+        #set up layout
+        self.layout.addWidget(self.editBox)
+        self.layout.addWidget(self.toolbar)
+        self.setLayout(self.layout)
+        return
+#---------------------------------------------------------------------------
+    def setDocument(self, document):
+        self.editBox.setDocument(document)
+        self.document = document
+        return
+#---------------------------------------------------------------------------
+    def createToolbar(self):
+        # Create main toolbar
+        mainToolBar = QToolBar()
+        mainToolBar.setMovable(False)
+
+        mainToolBar.setIconSize(QSize(18, 18))
+
+        #Buttons
+        #Font Colour Picker
+        self.fontColourPicker = QComboBox()
+        with open(os.path.join('colours', 'colours.json')) as f:
+            self.colours = json.load(f)
+        self.fontColourPicker.addItems(self.colours.keys())
+        self.fontColourPicker.setStatusTip("Text Colour")
+        mainToolBar.addWidget(self.fontColourPicker)
+        self.fontColourPicker.setCurrentIndex(0)
+        self.fontColourPicker.currentIndexChanged.connect(self.colourPickerChanged)
+
+        #Text Highlight Colour Picker
+        self.textHighlight = QComboBox()
+        self.textHighlight.addItems(self.colours.keys())
+        self.textHighlight.setCurrentIndex(1)
+        self.textHighlight.setStatusTip("Highlight Colour")
+        mainToolBar.addWidget(self.textHighlight)
+        self.textHighlight.currentIndexChanged.connect(self.textHighlightChanged)
+
+        #Font Family
+        self.fontFamilyPicker = QFontComboBox()
+        self.fontFamilyPicker.setStatusTip("Font")
+        self.fontFamilyPicker.currentFontChanged.connect(self.fontChanged)
+        mainToolBar.addWidget(self.fontFamilyPicker)
+
+        #Font Size
+        self.fontSizePicker = QComboBox()
+        self.fontSizePicker.addItems([str(s) for s in fontSizePickers])
+        self.fontSizePicker.setCurrentIndex(fontSizePickers.index(defaultfontSize))
+        self.fontSizePicker.setStatusTip("Font Size")
+        mainToolBar.addWidget(self.fontSizePicker)
+        self.fontSizePicker.currentIndexChanged.connect(self.fontSizePickerChanged)
+        mainToolBar.addSeparator()
+
+        #Bold
+        self.boldButton = QAction(QIcon(os.path.join('icons', 'bold.svg')), "Bold")
+        self.boldButton.setStatusTip("Bold")
+        self.boldButton.setCheckable(True)
+        self.boldButton.toggled.connect(lambda x: self.editBox.setFontWeight(QFont.Bold if x else QFont.Normal))
+        mainToolBar.addAction(self.boldButton)
+
+        #Italic
+        self.italicButton = QAction(QIcon(os.path.join('icons', 'italic.svg')), "Italic")
+        self.italicButton.setStatusTip("Italic")
+        self.italicButton.setCheckable(True)
+        self.italicButton.toggled.connect(self.editBox.setFontItalic)
+        mainToolBar.addAction(self.italicButton)
+
+        #Underline
+        self.underlineButton = QAction(QIcon(os.path.join('icons', 'underline.svg')), "Underline")
+        self.underlineButton.setStatusTip("Underline")
+        self.underlineButton.setCheckable(True)
+        self.underlineButton.toggled.connect(self.editBox.setFontUnderline)
+        mainToolBar.addAction(self.underlineButton)
+
+        #alignment
+
+        return(mainToolBar)
+#---------------------------------------------------------------------------    
+    def createEditBox(self):
+
+        editBox = QTextEdit()
+        editBox.setFontPointSize(defaultfontSize)
+        editBox.setFont(QFont('Times', defaultfontSize))
+        editBox.setPlaceholderText("New Note.....")
+        editBox.textChanged.connect(self.textHasChanged)
+
+        return(editBox)
+#---------------------------------------------------------------------------
+    def textHasChanged(self):
+
+        plainText = self.editBox.toPlainText()
+        if(len(plainText) >= 1 ):
+            if(plainText[-1] == ' '):
+                """ INSERT HERE CALL TO SPELL CHECK MODULE I.E
+                    self.editBox.spell_check(self.document)
+                """
+
+        return
+#---------------------------------------------------------------------------
+    def fontChanged(self):
+
+        font = self.fontFamilyPicker.currentFont()
+        self.editBox.setCurrentFont(font)
+        self.fontSizePickerChanged()
+        return
+#---------------------------------------------------------------------------
+    def fontSizePickerChanged(self):
+
+        fontSize = self.fontSizePicker.currentText()
+        self.editBox.setFontPointSize(float(fontSize))
+        self.fontSizePicker.setCurrentText(fontSize)
 
     def setNoteDocument(self, document):
         """
@@ -86,6 +173,13 @@ class NoteEditor(QWidget):
 
                     currentTextCursor = QTextCursor(self.document) #setting the cursor 
                     textCursor = self.document.find(wrongSpelling, currentTextCursor, QTextDocument.FindCaseSensitively or QTextDocument.FindWholeWords) #finding the misspelled word
+        return
+#---------------------------------------------------------------------------
+    def colourPickerChanged(self):
+
+        currentColour = self.fontColourPicker.currentText()
+        r,g,b = self.colours[currentColour]['rgb']
+        self.editBox.setTextColor(QColor(r,g,b))
 
                     underlineFormat = QTextCharFormat()
                     underlineFormat.setUnderlineColor(QColor(255, 0, 0)) #setting underline colour to red
@@ -97,6 +191,12 @@ class NoteEditor(QWidget):
                     #self.list.itemClicked(self.list_choice) #connection not working
                  
         return
+#---------------------------------------------------------------------------
+    def textHighlightChanged(self):
+
+        currentColour = self.textHighlight.currentText()
+        r,g,b = self.colours[currentColour]['rgb']
+        self.editBox.setTextBackgroundColor(QColor(r,g,b))
 
     def list_choice(self):
         currentTextCursor = QTextCursor(self.document)

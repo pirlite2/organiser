@@ -18,8 +18,8 @@
 #******************************************************************************
 
 from PySide2.QtCore import Qt
-from PySide2.QtGui import QTextDocument, QTextCursor, QTextCharFormat, QColor
-from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QToolBar, QTextEdit, QVBoxLayout,QAction
+from PySide2.QtGui import QTextDocument, QTextCursor, QTextCharFormat, QColor, QStandardItemModel, QStandardItem
+from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QToolBar, QTextEdit, QVBoxLayout,QListView
 
 import enchant
 
@@ -66,48 +66,44 @@ class NoteEditor(QWidget):
         :version:
         :author: pir & Andrei
         """
-        d = enchant.Dict("en_GB")
-        documentText = document.toPlainText()
-        wordList = documentText.split()
+        d = enchant.Dict("en_GB") #selecting the English UK dictionary
+        documentText = document.toPlainText() # converting to plain text
+        wordList = documentText.split() # spliting the sentance into individual words
 
         # test
         for i in range(0, len(wordList)):
-            print(wordList[i])
+            print(wordList[i]) #printing the list of words from the sentance
         #test
-        #self.setContextMenuPolicy(Qt.ActionsContextMenu)
-        # find misspelled word & correct it
-        #def swap(self):
-         #   textCursor.insertText(correctSpelling, noUnderlineFormat)
+  
         for s in range(0,len(wordList)):
-            if d.check(wordList[s]) is False: #if word is incorrect
-                wrongSpelling = wordList[s]
-                correctSpelling = d.suggest(wordList[s])
-                print("\nMisspelled word is  %s" % wrongSpelling)
-                print("%s" % correctSpelling)
-
+            if d.check(wordList[s]) is False: #if the word is misspeled find suggestions and highlight with a red underline
+                wrongSpelling = wordList[s] # store the misspeled word
+                correctSpelling = d.suggest(wordList[s]) # suggest correct spelling
+                print("\nMisspelled word is  %s" % wrongSpelling) # print the misspled word
+                print("%s" % correctSpelling) # print list of suggestions
+    #            list = QListView()
+    #            model = QStandardItemModel(list)
+     
+                #for correctSpelling in correctSpelling:
+                #   item = QStandardItem(correctSpelling)
+                #   model.appendRow(item)
+                #   list.setModel(model)
+                #list.show()
                 for t in range(0,len(correctSpelling)):
                     print("Choice number",t ,"is" ,correctSpelling[t])
-                   # replace = QAction("Replace with %s" % correctSpelling[t], self)
-                   # replace.triggered.connect(swap)
-                   # self.addAction(replace)
-                    
-                    currentTextCursor = QTextCursor(document)
-                    textCursor = document.find(wrongSpelling, currentTextCursor, QTextDocument.FindCaseSensitively or QTextDocument.FindWholeWords)
+                
+                    currentTextCursor = QTextCursor(document) #setting the cursor 
+                    textCursor = document.find(wrongSpelling, currentTextCursor, QTextDocument.FindCaseSensitively or QTextDocument.FindWholeWords) #finding the misspelled word
 
                     underlineFormat = QTextCharFormat()
-                    underlineFormat.setUnderlineColor(QColor(255, 0, 0))
-                    underlineFormat.setUnderlineStyle(QTextCharFormat.SpellCheckUnderline)
-                    textCursor.setCharFormat(underlineFormat)
+                    underlineFormat.setUnderlineColor(QColor(255, 0, 0)) #setting underline colour to red
+                    underlineFormat.setUnderlineStyle(QTextCharFormat.SpellCheckUnderline) #setting the underline style
+                    textCursor.setCharFormat(underlineFormat) #applying settinggs to the cursor
 
                     noUnderlineFormat = QTextCharFormat()
-                    noUnderlineFormat.setUnderlineStyle(QTextCharFormat.NoUnderline)
-                    #textCursor.insertText(correctSpelling, noUnderlineFormat) # Uncoment to correct mispelled word & remove wiggly red underline
-                
-        
-                
-                
-
-
+                    noUnderlineFormat.setUnderlineStyle(QTextCharFormat.NoUnderline) # settings for removing the underline
+                   #textCursor.insertText(correctSpelling[t], noUnderlineFormat) # Uncoment to correct mispelled word & remove wiggly red underline
+      
         return
 
 
@@ -121,15 +117,15 @@ if __name__ == "__main__":
 
     mainWindow = QMainWindow()
     noteEditor = NoteEditor()
-
+  
     mainWindow.setCentralWidget(noteEditor)
-    mainWindow.show()
+    mainWindow.show() # showing the window
 
-    document = QTextDocument("I alerady fuond the solution btu it’s good to hvae more than")
+    document = QTextDocument("I alerady fuond the solution btu it’s good to hvae more than") #prototype input text for spellchecker
     noteEditor.setNoteDocument(document)
-    noteEditor.spell_check(document)
+    noteEditor.spell_check(document) #inputing to spellchecker
 
-    exit(application.exec_()) 
+    exit(application.exec_()) #clean app exit
 
 #******************************************************************************
 

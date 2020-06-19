@@ -362,7 +362,7 @@ Spell checker: Andrei Georgescu
     
     def on_quit_action(self):
         """
-        Handler for 'quit' action
+        Handler for 'quit' menu action
         :version:
         :author: pir, Hong Zhou
         """
@@ -375,11 +375,9 @@ Spell checker: Andrei Georgescu
 
             if "Yes" in result:
                 print("Saved and Quit")
-                self.on_save_action()
+                #self.save_file(self.filePath) Not sure save_file works at the moment!
             else:
                 print("The file wasn't saved!")
-                self.close()
-                return
 
         print("quitting application")
         self.close()

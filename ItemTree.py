@@ -69,13 +69,9 @@ class ItemTree (QTreeWidget):
     #--------------------------------------------------------------------------
 
     def insert_task_item(self, expanded, child):
-    #def insert_task_item(self, iconIndex, title, deadline, expanded, child):
         """
         Insert a new task item into the task tree with the supplied properties:
         
-        iconIndex : index into treeIconsList specifying icon to be used for the node
-        title: string of text used in tree
-        deadline: int in ISO-8601 format of: YYYYMMDDHHMM
         expanded : True|False depending whether the node is to be expanded ot not
         child : True|False, depending on whether the task to be added is a child or not
 
@@ -87,20 +83,17 @@ class ItemTree (QTreeWidget):
         title = ""
         deadline = 0
         editTaskDialog = EditTaskItem(self.defaultIconIndex, title, deadline, self.treeIconsList)
-        if (editTaskDialog.exec_() == QDialog.Accepted):
-            print("accepted")
+        if editTaskDialog.exec_() == QDialog.Accepted:
             (iconIndex, title, deadline) = editTaskDialog.get_item_values()
         else:
-            print("rejected")
             return
 
-        if (self.topLevelItemCount() == 0):
+        if self.topLevelItemCount() == 0:
             newTaskItem = TaskItem(self)
             self.setCurrentItem(newTaskItem, 0)
         else:
             currentItem = self.currentItem()
-            #print(self.currentItem().text(0))   #test
-            if (child == True):
+            if child == True:
                 # Create child item
                 newTaskItem = TaskItem(currentItem)
             else:
@@ -153,19 +146,28 @@ class ItemTree (QTreeWidget):
 
     def add_task_item(self, iconIndex, title, note, deadline, expanded, indentLevel):
         """
-        
+        Add tree items programmatically
+                
+        iconIndex : index into treeIconsList specifying icon to be used for the node
+        title: string of text used in tree
+        note: string to instanatiate note
+        deadline: int in ISO-8601 format of: YYYYMMDDHHMM
+        expanded : True|False depending whether the node is to be expanded ot not
         indentLevel: 0 = top-level item
+
         @return: None
-        @author:
+        @author: pir, 
         """
         
-        # Add top level item
-        newTaskItem = TaskItem(self)
-        newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
-        newTaskItem.setText(0, title)
-        newTaskItem.note = QTextDocument()
-        newTaskItem.deadline = deadline        
-        newTaskItem.setExpanded(expanded)
+        if self.topLevelItemCount() == 0:
+            # Add first top level item
+            assert indentLevel == 0, "First task must be at indent level 0"
+            newTaskItem = TaskItem(self)
+            newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
+            newTaskItem.setText(0, title)
+            newTaskItem.note = QTextDocument(note)
+            newTaskItem.deadline = deadline        
+            newTaskItem.setExpanded(expanded)
 
         return
 

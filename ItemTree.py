@@ -171,7 +171,6 @@ class ItemTree (QTreeWidget):
             newTaskItem.setExpanded(expanded)
             myStack.append(newTaskItem)
         else:
-
             # Create Parent
             if indentLevel == 0:
                 newTaskItem = TaskItem(self)
@@ -191,8 +190,8 @@ class ItemTree (QTreeWidget):
                     newTaskItem.deadline = deadline        
                     newTaskItem.setExpanded(expanded)
                     myStack.append(newTaskItem)
-                # Create child
                 else:
+                    # Create child
                     newTaskItem = TaskItem(myStack.pop())
                     newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
                     newTaskItem.setText(0, title)
@@ -200,11 +199,8 @@ class ItemTree (QTreeWidget):
                     newTaskItem.deadline = deadline        
                     newTaskItem.setExpanded(expanded)
                     myStack.append(newTaskItem)
-        
         return
-
-        
-
+    
     #--------------------------------------------------------------------------
 
     def edit_task_item(self):

@@ -330,7 +330,6 @@ class MainWindow(QMainWindow):
         if self.treeModified:
             self.save_file(self.filePath)
 
-        print("quitting application")
         self.close()
         
         return

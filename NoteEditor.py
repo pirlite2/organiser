@@ -246,7 +246,7 @@ class NoteEditor(QWidget):
         print("selected word = ", textCursor.selectedText())
 
         underlineFormat = QTextCharFormat()
-        underlineFormat.setUnderlineColor(QColor(255, 0, 0))
+        underlineFormat.setUnderlineColor(Qt.red)
         underlineFormat.setUnderlineStyle(QTextCharFormat.SpellCheckUnderline)
         textCursor.setCharFormat(underlineFormat)
 

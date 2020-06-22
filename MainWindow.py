@@ -408,13 +408,25 @@ if __name__ == "__main__":
     if mainWindow.showScheduleOnStartupAction.isChecked():
         mainWindow.itemTree.show_schedule()
 
+    # test add_task_item() programmtically 
+    mainWindow.itemTree.add_task_item(0, "A", "note A", 202006200000, True, 0)
+    mainWindow.itemTree.add_task_item(0, "B", "note B", 202006200000, True, 1)
+    mainWindow.itemTree.add_task_item(0, "C", "note C", 202006200000, True, 1)
+    mainWindow.itemTree.add_task_item(0, "F", "note F", 202006200000, True, 2)
+    mainWindow.itemTree.add_task_item(0, "G", "note G", 202006200000, True, 2)
+    mainWindow.itemTree.add_task_item(0, "J", "note J", 202006200000, True, 3)
 
+    mainWindow.itemTree.add_task_item(0, "D", "note D", 202006200000, True, 0)
+    mainWindow.itemTree.add_task_item(0, "H", "note H", 202006200000, True, 1)
+    mainWindow.itemTree.add_task_item(0, "I", "note I", 202006200000, True, 1)
 
-    # test add_task_item()
-    mainWindow.itemTree.add_task_item(0, "initial task from main()", "note1", 202006200000, True, 0)
-    mainWindow.itemTree.add_task_item(0, "hello2", "note2", 202006220000, True, 0)
-    mainWindow.itemTree.add_task_item(0, "first child", "note3", 202006210000, True, 0)
+    mainWindow.itemTree.add_task_item(0, "E", "note E", 202006200000, True, 0)
+    #mainWindow.itemTree.add_task_item(0, "E", "note E", 202006200000, True, 2)
     # test
+
+
+
+
 
 
 

@@ -20,6 +20,9 @@
 import sys
 import os
 from pathlib import Path
+from lxml import etree
+
+from PySide2.QtGui import QIcon
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QSplitter
 from PySide2.QtWidgets import QMenuBar, QMenu, QAction
@@ -28,7 +31,10 @@ from PySide2.QtWidgets import QToolBar
 from PySide2.QtWidgets import QFileDialog
 from PySide2.QtWidgets import QMessageBox
 
-from ItemTree import *
+from ItemTree import ItemTree
+
+#******************************************************************************
+
 
 #******************************************************************************
 
@@ -175,6 +181,7 @@ class MainWindow(QMainWindow):
     def on_edit_item(self):
         """
         Handler for edit task
+
         :version:
         :author: pir 
         """
@@ -188,14 +195,56 @@ class MainWindow(QMainWindow):
 
     def open_file(self, filePath):
         """
+        Read XML input file
+
         :version:
-        :author: ??? 
+        :author: pir 
         """
 
+        taskIndentLevel = 0
+
+        #--------------------------------------------------------------------------
+
+        def processTaskNode(taskNode):
+            """
+            Recursively process <task> elements of XML file
+            :version:
+            :author: pir 
+            """
+
+            nonlocal taskIndentLevel
+
+            iconIndex = int(taskNode.attrib.get("icon"))    # Cast from string
+            expanded = bool(taskNode.attrib.get("expanded"))    # Cast from string
+            taskChildList = list(taskNode)
+
+            title = taskChildList[0].text
+            note = taskChildList[1].text  
+            deadline = int(taskChildList[2].text)
+            self.itemTree.add_task_item(iconIndex, title, note, deadline, expanded, taskIndentLevel)
+    
+            noChildren = len(taskChildList)
+            noTaskSubElements = 3   # title, note & deadline
+            taskIndentLevel += 1
+            for i in range(noTaskSubElements, noChildren):
+                processTaskNode(taskChildList[i]) # Recursively process all <task> sub-children
+            taskIndentLevel += -1
+    
+            return
+
+        #--------------------------------------------------------------------------
+
+        # Reset/clear existing tree
+        self.itemTree.clear()
+        self.itemTree.add_item_stack.clear()
+        
         # Read XML file
+        tree = etree.parse(filePath)
+        root = tree.getroot()
 
-
-        # call add_task_item() to build tree
+        childList = list(root)
+        for child in childList:
+            processTaskNode(child)
 
         # test
         #f = open(self.filePath) # Read the file
@@ -213,7 +262,7 @@ class MainWindow(QMainWindow):
     def save_file(self, filePath):
         """
         :version:
-        :author: ???
+        :author: pir
         """
 
         # Write XML file
@@ -235,14 +284,14 @@ class MainWindow(QMainWindow):
         # Get file path
         (filePath, filetype) = QFileDialog.getOpenFileName(self, "Open", self.currentDirectory, "Organiser file (*.xml);;Text Files (*.txt)")
 
-        print("file = ", filePath) # debug
+        #print("file = ", filePath) # debug
 
         if filePath != "":
             self.filePath = filePath
         else:
             return
 
-        print("Opening: ", self.filePath)
+        #print("Opening: ", self.filePath)
              
         (path,fileName) = os.path.split(self.filePath)
         self.currentDirectory = path
@@ -339,6 +388,7 @@ class MainWindow(QMainWindow):
     def on_show_schedule_action(self):
         """
         Handler for 'Search/Schedule' menu action
+
         :version:
         :author: pir
         """
@@ -350,6 +400,7 @@ class MainWindow(QMainWindow):
     def on_search_tree_action(self):
         """
         Handler for 'Search/Search tree' menu action
+
         :version:
         :author: pir
         """
@@ -361,6 +412,7 @@ class MainWindow(QMainWindow):
     def on_search_notes_action(self):
         """
         Handler for 'Search/Search notes' menu action
+
         :version:
         :author: pir
         """
@@ -372,6 +424,7 @@ class MainWindow(QMainWindow):
     def on_set_preferences_action(self):
         """
         Handler for 'Options/Set preferences' menu action
+
         :version:
         :author: pir
         """        
@@ -385,6 +438,7 @@ class MainWindow(QMainWindow):
     def on_about_action(self):
         """
         Handler for "About/About" action
+        
         :version:
         :author: Hong Zhou
         """
@@ -409,22 +463,23 @@ if __name__ == "__main__":
         mainWindow.itemTree.show_schedule()
 
     # test add_task_item() programmtically 
-    mainWindow.itemTree.add_task_item(0, "A", "note A", 202006200000, True, 0)
-    mainWindow.itemTree.add_task_item(0, "B", "note B", 202006200000, True, 1)
-    mainWindow.itemTree.add_task_item(0, "C", "note C", 202006200000, True, 1)
-    mainWindow.itemTree.add_task_item(0, "F", "note F", 202006200000, True, 2)
-    mainWindow.itemTree.add_task_item(0, "G", "note G", 202006200000, True, 2)
-    mainWindow.itemTree.add_task_item(0, "J", "note J", 202006200000, True, 3)
+    # mainWindow.itemTree.add_task_item(0, "A", "note A", 202006200000, True, 0)
+    # mainWindow.itemTree.add_task_item(0, "B", "note B", 202006200000, True, 1)
+    # mainWindow.itemTree.add_task_item(0, "C", "note C", 202006200000, True, 1)
+    # mainWindow.itemTree.add_task_item(0, "F", "note F", 202006200000, True, 2)
+    # mainWindow.itemTree.add_task_item(0, "G", "note G", 202006200000, True, 2)
+    # mainWindow.itemTree.add_task_item(0, "J", "note J", 202006200000, True, 3)
 
-    mainWindow.itemTree.add_task_item(0, "D", "note D", 202006200000, True, 0)
-    mainWindow.itemTree.add_task_item(0, "H", "note H", 202006200000, True, 1)
-    mainWindow.itemTree.add_task_item(0, "I", "note I", 202006200000, True, 1)
+    # mainWindow.itemTree.add_task_item(0, "D", "note D", 202006200000, True, 0)
+    # mainWindow.itemTree.add_task_item(0, "H", "note H", 202006200000, True, 1)
+    # mainWindow.itemTree.add_task_item(0, "I", "note I", 202006200000, True, 1)
 
-    mainWindow.itemTree.add_task_item(0, "E", "note E", 202006200000, True, 0)
-    #mainWindow.itemTree.add_task_item(0, "E", "note E", 202006200000, True, 2)
+    # mainWindow.itemTree.add_task_item(0, "E", "note E", 202006200000, True, 0)
+    #mainWindow.itemTree.add_task_item(0, "E", "note E", 202006200000, True, 2) # Should produce an error
     # test
 
-
+    # Test XML reading
+    mainWindow.open_file("/home/pir/Desktop/EEE231/organiser/initial-xml-sketch.xml")
 
 
 

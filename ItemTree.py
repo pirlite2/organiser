@@ -72,19 +72,6 @@ class ItemTree (QTreeWidget):
         
     #--------------------------------------------------------------------------
 
-    def populate_new_task_item(self, newTaskItem, iconIndex, title, note, deadline, expanded):
-        "Function to populate fields of a newly-created task item"
-
-        newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
-        newTaskItem.setText(0, title)
-        newTaskItem.note = QTextDocument(note)
-        newTaskItem.deadline = deadline        
-        newTaskItem.setExpanded(expanded)
-
-        return
-
-    #--------------------------------------------------------------------------
-
     def add_task_item(self, iconIndex, title, note, deadline, expanded, indentLevel):
         """
         Add tree items programmatically; interface to reading XML files
@@ -100,11 +87,27 @@ class ItemTree (QTreeWidget):
         @author: pir 
         """
 
+        #--------------------------------------------------------------------------
+
+        def populate_new_task_item(newTaskItem, iconIndex, title, note, deadline, expanded):
+            "Function to populate fields of a newly-created task item"
+
+            assert iconIndex < len(self.treeIconsList), "Icon index out-of-range"
+            newTaskItem.setIcon(0, self.treeIconsList[iconIndex])
+            newTaskItem.setText(0, title)
+            newTaskItem.note = QTextDocument(note)
+            newTaskItem.deadline = deadline        
+            newTaskItem.setExpanded(expanded)
+
+            return
+
+        #--------------------------------------------------------------------------
+
         if self.topLevelItemCount() == 0:
             # Add first top level item
             assert indentLevel == 0, "First task created must be at indent level 0"
             newTaskItem = TaskItem(self)
-            self.populate_new_task_item(newTaskItem, iconIndex, title, note, deadline, expanded)
+            populate_new_task_item(newTaskItem, iconIndex, title, note, deadline, expanded)
             self.add_item_stack.push((newTaskItem, indentLevel))
             self.setCurrentItem(newTaskItem, 0)
             self.editBox.setNoteDocument(newTaskItem.note)
@@ -115,7 +118,7 @@ class ItemTree (QTreeWidget):
 
         if indentLevel > lastIndent:
             newTaskItem = TaskItem(lastItem)
-            self.populate_new_task_item(newTaskItem, iconIndex, title, note, deadline, expanded)
+            populate_new_task_item(newTaskItem, iconIndex, title, note, deadline, expanded)
             self.add_item_stack.push((newTaskItem, indentLevel))
             return
 
@@ -131,7 +134,7 @@ class ItemTree (QTreeWidget):
                 # Create child task
                 newTaskItem = TaskItem(lastItem)
 
-            self.populate_new_task_item(newTaskItem, iconIndex, title, note, deadline, expanded)
+            populate_new_task_item(newTaskItem, iconIndex, title, note, deadline, expanded)
             self.add_item_stack.push((newTaskItem, indentLevel))
             return           
 

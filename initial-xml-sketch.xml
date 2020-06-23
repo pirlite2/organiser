@@ -8,7 +8,7 @@
             <title>child node</title>
             <note>another reminder!</note>
             <deadline> 202005211430 </deadline>
-            <task icon="76" expanded="false">
+            <task icon="4" expanded="false">
 				<title>2nd level </title>
 				<note> yet more notes</note>
 				<deadline>202006191700</deadline>
